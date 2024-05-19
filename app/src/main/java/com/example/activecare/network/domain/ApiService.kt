@@ -3,8 +3,9 @@ package com.example.activecare.network.domain
 import com.example.activecare.cache.domain.Cache
 import com.example.activecare.dataclasses.FoodRecord
 import com.example.activecare.dataclasses.GetTokens
+import com.example.activecare.dataclasses.Limitation
 import com.example.activecare.dataclasses.LoginJson
-import com.example.activecare.dataclasses.Token
+import com.example.activecare.dataclasses.Stat
 import com.example.activecare.dataclasses.User
 import com.example.activecare.dataclasses.WatchStat
 import com.example.activecare.dataclasses.Workout
@@ -17,19 +18,49 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 
 interface ApiService {
-    suspend fun login(loginData: LoginJson): Pair<List<Token>?, Error?>
+    /**
+     * A function that can be used to send a request with an email and password to
+     * the server to authenticate the user
+     * @param loginData LoginJson dataclass with 2 fields, email and password
+     * @return Pair<GetTokens?, Error?> If the user's data is correct, the data class
+     * GetTokens will be returned, with two Tokens inside (access and refresh,
+     * which must be saved in SharedPref). If an error occurs, the error
+     * will be processed and the error details will be returned.
+     */
+    suspend fun login(loginData: LoginJson): Pair<GetTokens?, Error?>
+
+    /**
+     * The function required to update the access token. Called when the application
+     * is launched. Takes access tokens, checks that they are not empty strings,
+     * goes to the server for new access and refresh tokens.
+     * @return Error? If an error occurs, it returns its message.
+     */
     suspend fun updateToken(): Error?
+
+    /**
+     * A function that can be used to send a request with all the data entered by the
+     * user at the onboard and signup stage to the server for user registration.
+     * @param user User - all userdata from onboard and signup stages
+     * @return Pair<GetTokens?, Error?> If the user's data is correct, the data class
+     * GetTokens will be returned, with two Tokens inside (access and refresh,
+     * which must be saved in SharedPref). If an error occurs, the error
+     * will be processed and the error details will be returned.
+     */
     suspend fun createUser(user: User): Pair<GetTokens?, Error?>
 
     suspend fun appendUserData(data: WatchStat): Pair<WatchStat?, Error?>
     suspend fun appendUserData(data: FoodRecord): Pair<FoodRecord?, Error?>
     suspend fun appendUserData(data: Workout): Pair<Workout?, Error?>
+    suspend fun appendUserData(data: Stat): Pair<Stat?, Error?>
 
-    suspend fun getUserData(userId: String, dataType: String): Pair<Any?, Error?>
+    suspend fun getUserWatchStat(limit: Limitation): Pair<List<WatchStat>, Error?>
+    suspend fun getUserFoodRecords(limit: Limitation): Pair<List<FoodRecord>, Error?>
+    suspend fun getUserWorkouts(limit: Limitation): Pair<List<Workout>, Error?>
+    suspend fun getUserStat(limit: Limitation): Pair<List<Stat>, Error?>
 
-    suspend fun getData(url: String): Pair<Any?, Error?>
 
     companion object {
         fun create(cache: Cache): ApiService {
@@ -37,7 +68,13 @@ interface ApiService {
                 client = HttpClient(Android) {
                     // JSON
                     install(ContentNegotiation) {
-                        json()
+                        json(
+                            Json {
+                                ignoreUnknownKeys = true
+                                isLenient = true
+                                encodeDefaults = false
+                            }
+                        )
                     }
                     // ready to take errors
                     expectSuccess = true
@@ -55,12 +92,6 @@ interface ApiService {
                 },
                 cache = cache
             )
-        }
-
-        private val json = kotlinx.serialization.json.Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            encodeDefaults = false
         }
     }
 

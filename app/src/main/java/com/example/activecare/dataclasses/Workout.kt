@@ -1,5 +1,8 @@
 package com.example.activecare.dataclasses
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Workout(
     val id: String? = null,
     val userid: String,

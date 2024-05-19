@@ -1,5 +1,6 @@
 package com.example.activecare.screens.onboard.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,11 +20,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
+import com.example.activecare.common.DateTimeParser
 import com.example.activecare.components.TextComponent
 import com.example.activecare.ui.theme.AppTheme
 import java.time.Instant
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +35,8 @@ fun DateView(onDateChanged: (String) -> Unit) {
         val selectedDate = datePickerState.selectedDateMillis?.let {
             Instant.ofEpochMilli(it).atOffset(ZoneOffset.UTC)
         }
-        val selectedDateString = selectedDate?.format(DateTimeFormatter.ISO_LOCAL_DATE).toString()
+        val selectedDateString = selectedDate?.format(DateTimeParser).toString()
+        Log.d("MapView",selectedDateString)
         onDateChanged(selectedDateString)
     }
 

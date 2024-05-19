@@ -208,7 +208,7 @@ class LoginViewModel @AssistedInject constructor(
                 height = onboardData.height!!,
                 birthdate = onboardData.birthDate!!,
             )
-
+            Log.d("LVM", user.toString())
             val result = apiService.createUser(user)
             if (result.second != null) {
                 sendErrorEvent(result.second!!.message)
@@ -252,7 +252,14 @@ class LoginViewModel @AssistedInject constructor(
                     sendErrorEvent(result.second!!.message)
                     return@launch
                 }
-                cache.userSignIn(result.first!![0].access_token, result.first!![1].access_token)
+                if (result.first == null){
+                    sendErrorEvent("Something goes wrong")
+                    return@launch
+                }
+                cache.userSignIn(
+                    result.first!!.access_token.access_token,
+                    result.first!!.refresh_token.access_token
+                )
                 sendSuccessEvent()
             } catch (ex: JsonConvertException) {
                 Log.e("LVM", "${ex.message}")

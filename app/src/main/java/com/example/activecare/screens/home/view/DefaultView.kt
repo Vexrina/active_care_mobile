@@ -6,9 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.activecare.R
+import com.example.activecare.common.filterByDate
+import com.example.activecare.common.filterFRByDate
 import com.example.activecare.components.CardComponent
 import com.example.activecare.components.StepsComponent
-import com.example.activecare.screens.home.models.HomeEvent
+import com.example.activecare.dataclasses.FoodRecord
+import com.example.activecare.dataclasses.Stat
 import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.theme.AppTheme
 
@@ -25,23 +28,62 @@ fun DefaultView(
         stringResource(id = R.string.homeHeaderCalories),
         stringResource(id = R.string.homeHeaderWater),
     )
-    val values = listOf(
-        "71 уд/мин",
-        "65.5 кг",
-        "7ч 45мин",
-        "98%",
-        "2500 ккал",
-        "750 мл"
+    val filteredRecords = filterFRByDate(viewState.foodRecord)
+    val filteredStat = filterByDate(viewState.stats)
+    StepsComponent(
+        currentProgress = if (filteredStat.isNotEmpty()) filteredStat[0].steps else 0,
+        maxProgress = 10000,
     )
-    StepsComponent(currentProgress = 500, maxProgress = 10000)
     LazyVerticalGrid(columns = GridCells.Fixed(2)) {
         items(categories.size) {
             CardComponent(
                 header = categories[it],
-                value = values[it],
+                value = whatValue(
+                    stat = if (filteredStat.isNotEmpty()) filteredStat[0] else Stat(
+                        "0",
+                        0f,
+                        0,
+                        0f,
+                        0,
+                        viewState.stats[0].weight,
+                        0
+                    ),
+                    idx = it,
+                    foodRecords = filteredRecords,
+                ) + whatDim(it),
                 onClick = {onClickEvents[it].invoke()},
                 containerColor = if (it in listOf(1,4,5)) AppTheme.colors.LightBack else Color.Gray
             )
         }
+    }
+}
+
+private fun whatValue(
+    stat: Stat,
+    idx: Int,
+    foodRecords: List<FoodRecord>,
+): String{
+    return when(idx){
+        0 -> stat.pulse
+        1 -> stat.weight
+        2 -> "${stat.sleep/100} ч ${stat.sleep%100} мин"
+        3 -> stat.oxygen_blood
+        4 -> foodRecords.sumOf {
+            it.calories
+        }
+        5 -> stat.water*250
+        else -> ""
+    }.toString()
+}
+
+private fun whatDim(idx:Int): String{
+    return when(idx){
+        0 -> " уд/мин"
+        1 -> " кг"
+        2 -> ""
+        3 -> "%"
+        4 -> " ккал"
+        5 -> " мл"
+        else -> ""
     }
 }

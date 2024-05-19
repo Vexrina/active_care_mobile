@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,11 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.activecare.common.simpleDateTimeParser
 import com.example.activecare.ui.theme.AppTheme
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 
 @Composable
@@ -45,7 +42,7 @@ fun ChooseDateComponent(
             next = false
         )
         TextComponent(
-            text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date.time),
+            text = simpleDateTimeParser(date).substring(0,10),
             modifier = Modifier,
             textColor = AppTheme.colors.LightText,
             textSize = 22.sp,

@@ -49,14 +49,14 @@ fun WeightChangesComponent(
                 textColor = AppTheme.colors.LightText,
             )
             TextComponent(
-                text = String.format("%.1f кг", lastWeight-preLastWeight),
+                text = weightChanged(lastWeight, preLastWeight),
                 modifier = Modifier,
                 textSize = 22.sp,
                 textColor = AppTheme.colors.LightText,
             )
         }
         TextComponent(
-            text = SimpleDateFormat("dd/MM/yyyy\nhh:mm", Locale.getDefault()).format(lastDateStamp.time),
+            text = SimpleDateFormat("dd/MM/yyyy\nhh:mm", Locale.ENGLISH).format(lastDateStamp.time),
             modifier = Modifier,
             textSize = 22.sp,
             textColor = AppTheme.colors.LightText,
@@ -64,6 +64,14 @@ fun WeightChangesComponent(
     }
 }
 
+private fun weightChanged(
+    lastWeight: Float = 61.2f,
+    preLastWeight: Float = 67.4f
+): String{
+    val changes = lastWeight-preLastWeight
+    return if (changes==0f) ""
+    else "%.1f кг".format(changes)
+}
 @Preview
 @Composable
 fun ShowWeightChangesComponent(){

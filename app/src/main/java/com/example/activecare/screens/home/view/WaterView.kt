@@ -1,5 +1,6 @@
 package com.example.activecare.screens.home.view
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -8,8 +9,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -20,9 +21,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
+import com.example.activecare.common.calculateEndDate
+import com.example.activecare.common.filterByDate
+import com.example.activecare.common.simpleDateTimeParser
 import com.example.activecare.components.ButtonComponent
 import com.example.activecare.components.ChooseDateComponent
 import com.example.activecare.components.TextComponent
+import com.example.activecare.dataclasses.Limitation
 import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.theme.AppTheme
 import java.util.Calendar
@@ -30,9 +35,34 @@ import java.util.Calendar
 @Composable
 fun WaterView(
     viewState: HomeViewState,
+    onChangeWater: (Int)->Unit,
+    date: Calendar,
+    limit: Limitation,
+    onDataLoad: (Limitation)->Unit,
+    onChangeDate: (String)->Unit,
 ){
-    var currentDate by remember { mutableStateOf(Calendar.getInstance()) }
-    var drinked by remember { mutableIntStateOf(0) }
+    var currentDate by remember { mutableStateOf(date) }
+
+    var currentDateString by remember {
+        mutableStateOf(simpleDateTimeParser(currentDate))
+    }
+    var endDate by remember {
+        mutableStateOf(calculateEndDate(limit).substring(0, 10))
+    }
+
+    var stats by remember {
+        mutableStateOf(filterByDate(viewState.stats, currentDate))
+    }
+    LaunchedEffect(currentDateString){
+        onChangeDate.invoke(currentDateString)
+        Log.d("WVLE", currentDateString)
+        if (currentDateString.substring(0,10) == calculateEndDate(limit).substring(0,10)){
+            Log.d("WVLE", "ALARM")
+            val newLimit = Limitation(date = currentDateString)
+            endDate = calculateEndDate(newLimit)
+            onDataLoad.invoke(newLimit)
+        }
+    }
     ChooseDateComponent(
         date = currentDate,
         onBackClick = {
@@ -56,10 +86,10 @@ fun WaterView(
     ){
         items(8){idx->
             Icon(
-                painter = if (idx<drinked)
+                painter = if (idx<stats[0].water)
                     painterResource(id = R.drawable.water_filled)
                 else painterResource(id = R.drawable.water_outlined),
-                contentDescription = if (idx<drinked)
+                contentDescription = if (idx<stats[0].water)
                     idx.toString() + stringResource(id = R.string.water_filled)
                 else idx.toString() + stringResource(id = R.string.water_outlined),
                 tint = AppTheme.colors.LightText,
@@ -81,7 +111,7 @@ fun WaterView(
             .fillMaxWidth()
             .height(60.dp)
     ) {
-        if (drinked<8) drinked+=1
+        if (stats[0].water<8) onChangeWater.invoke(1)
     }
     ButtonComponent(
         text = "Стакан не выпит",
@@ -90,6 +120,6 @@ fun WaterView(
             .fillMaxWidth()
             .height(60.dp)
     ) {
-        if (drinked>0) drinked-=1
+        if (stats[0].water<8) onChangeWater.invoke(-1)
     }
 }

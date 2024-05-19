@@ -4,8 +4,9 @@ import android.util.Log
 import com.example.activecare.cache.domain.Cache
 import com.example.activecare.dataclasses.FoodRecord
 import com.example.activecare.dataclasses.GetTokens
+import com.example.activecare.dataclasses.Limitation
 import com.example.activecare.dataclasses.LoginJson
-import com.example.activecare.dataclasses.Token
+import com.example.activecare.dataclasses.Stat
 import com.example.activecare.dataclasses.User
 import com.example.activecare.dataclasses.WatchStat
 import com.example.activecare.dataclasses.Workout
@@ -31,7 +32,7 @@ class ApiServiceImpl @Inject constructor(
     private val client: HttpClient,
     private val cache: Cache,
 ) : ApiService {
-    override suspend fun login(loginData: LoginJson): Pair<List<Token>?, Error?> {
+    override suspend fun login(loginData: LoginJson): Pair<GetTokens?, Error?> {
         return try {
             val response = client.post {
                 header("Bearer-Authorization", "")
@@ -40,7 +41,7 @@ class ApiServiceImpl @Inject constructor(
                 setBody(loginData)
             }
 
-            Pair(response.body<List<Token>>(), null)
+            Pair(response.body<GetTokens>(), null)
         } catch (ex: Exception) {
             Pair(null, catchRequestsErrors(ex))
         }
@@ -72,12 +73,12 @@ class ApiServiceImpl @Inject constructor(
         }
         return try {
             val response = client.get {
-                header("Bearer-Authorization", tokens.second)
+                header("Authorization", "Bearer ${tokens.second}")
                 url(ApiRoutes.REFRESH_TOKEN)
                 contentType(ContentType.Application.Json)
             }
-            val newTokens = response.body<List<Token>>()
-            cache.userSignIn(newTokens[0].access_token, newTokens[1].access_token)
+            val newTokens = response.body<GetTokens>()
+            cache.userSignIn(newTokens.access_token.access_token, newTokens.refresh_token.access_token)
             null
         } catch (ex: Exception) {
             catchRequestsErrors(ex)
@@ -86,8 +87,13 @@ class ApiServiceImpl @Inject constructor(
 
     override suspend fun appendUserData(data: WatchStat): Pair<WatchStat?, Error?> {
         return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(null, Error("No tokens in SharedPreferences"))
+            }
             val response = client.post {
-                url(ApiRoutes.APPEND_WATCH_STAT)
+                header("Authorization", "Bearer ${tokens.first}")
+                url(ApiRoutes.WATCH_STAT)
                 contentType(ContentType.Application.Json)
                 setBody(data)
             }
@@ -104,8 +110,13 @@ class ApiServiceImpl @Inject constructor(
 
     override suspend fun appendUserData(data: FoodRecord): Pair<FoodRecord?, Error?> {
         return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(null, Error("No tokens in SharedPreferences"))
+            }
             val response = client.post {
-                url(ApiRoutes.APPEND_FOOD_RECORD)
+                header("Authorization", "Bearer ${tokens.first}")
+                url(ApiRoutes.FOOD_RECORD)
                 contentType(ContentType.Application.Json)
                 setBody(data)
             }
@@ -122,8 +133,13 @@ class ApiServiceImpl @Inject constructor(
 
     override suspend fun appendUserData(data: Workout): Pair<Workout?, Error?> {
         return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(null, Error("No tokens in SharedPreferences"))
+            }
             val response = client.post {
-                url(ApiRoutes.APPEND_WORKOUT)
+                header("Authorization", "Bearer ${tokens.first}")
+                url(ApiRoutes.WORKOUT)
                 contentType(ContentType.Application.Json)
                 setBody(data)
             }
@@ -138,39 +154,102 @@ class ApiServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserData(userId: String, dataType: String): Pair<Any?, Error?> {
-        return when (dataType) {
-            "foodRecord" -> getData(ApiRoutes.GET_FOOD_RECORD + userId)
-            "watchStat" -> getData(ApiRoutes.GET_WATCH_STAT + userId)
-            "workout" -> getData(ApiRoutes.GET_WORKOUT + userId)
-            "stat" -> getData(ApiRoutes.GET_STATS + userId)
-            else -> getData(ApiRoutes.GET_STATS + userId)
+    override suspend fun appendUserData(data: Stat): Pair<Stat?, Error?> {
+        return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(null, Error("No tokens in SharedPreferences"))
+            }
+            val response = client.post {
+                header("Authorization", "Bearer ${tokens.first}")
+                url(ApiRoutes.STATS)
+                contentType(ContentType.Application.Json)
+                setBody(data)
+            }
+            when (response.status) {
+                HttpStatusCode.OK -> Pair(response.body<Stat>(), null)
+                HttpStatusCode.BadRequest -> Pair(null, Error("Email is not valid"))
+                HttpStatusCode.Conflict -> Pair(null, Error("User already exist"))
+                else -> Pair(null, Error("Something went wrong"))
+            }
+        } catch (ex: Exception) {
+            Pair(null, Error("Something went wrong"))
         }
     }
 
-    override suspend fun getData(url: String): Pair<Any?, Error?> {
+
+    override suspend fun getUserWatchStat(limit: Limitation): Pair<List<WatchStat>, Error?> {
         return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(emptyList(), Error("No tokens in SharedPreferences"))
+            }
             val response = client.get {
-                header("Bearer-Authorization", "")
-                url(url)
+                header("Authorization", "Bearer ${tokens.first}")
+                url(createGetUrl(limit, ApiRoutes.WATCH_STAT))
                 contentType(ContentType.Application.Json)
             }
-            Pair(response.body(), null)
-        } catch (ex: RedirectResponseException) {
-            // 3xx responses
-            Log.e("ApiError", ex.response.status.description)
-            Pair(null, Error(ex.response.status.description))
-        } catch (ex: ClientRequestException) {
-            // 4xx responses
-            Log.e("ApiError", ex.response.status.description)
-            Pair(null, Error(ex.response.status.description))
-        } catch (ex: ServerResponseException) {
-            // 5xx responses
-            Log.e("ApiError", ex.response.status.description)
-            Pair(null, Error(ex.response.status.description))
+            Pair(response.body<List<WatchStat>>(), null)
+        } catch (ex: Exception) {
+            Pair(emptyList(), catchRequestsErrors(ex))
         }
     }
 
+    override suspend fun getUserFoodRecords(limit: Limitation): Pair<List<FoodRecord>, Error?> {
+        return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(emptyList(), Error("No tokens in SharedPreferences"))
+            }
+            val response = client.get {
+                header("Authorization", "Bearer ${tokens.first}")
+                url(createGetUrl(limit, ApiRoutes.FOOD_RECORD))
+                contentType(ContentType.Application.Json)
+            }
+            Log.d("APISERVICE", response.body())
+            Pair(response.body<List<FoodRecord>>(), null)
+        } catch (ex: Exception) {
+            Pair(emptyList(), catchRequestsErrors(ex))
+        }
+    }
+
+    override suspend fun getUserWorkouts(limit: Limitation): Pair<List<Workout>, Error?> {
+        return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(emptyList(), Error("No tokens in SharedPreferences"))
+            }
+            val response = client.get {
+                header("Authorization", "Bearer ${tokens.first}")
+                url(createGetUrl(limit, ApiRoutes.WORKOUT))
+                contentType(ContentType.Application.Json)
+            }
+            Pair(response.body<List<Workout>>(), null)
+        } catch (ex: Exception) {
+            Pair(emptyList(), catchRequestsErrors(ex))
+        }
+    }
+
+    override suspend fun getUserStat(limit: Limitation): Pair<List<Stat>, Error?> {
+        return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(emptyList(), Error("No tokens in SharedPreferences"))
+            }
+            val response = client.get {
+                header("Authorization", "Bearer ${tokens.first}")
+                url(createGetUrl(limit, ApiRoutes.STATS))
+                contentType(ContentType.Application.Json)
+            }
+            Pair(response.body<List<Stat>>(), null)
+        } catch (ex: Exception) {
+            Pair(emptyList(), catchRequestsErrors(ex))
+        }
+    }
+
+    private fun createGetUrl(limit: Limitation, url: String): String{
+        return url+"?date=${limit.date}&offset=${limit.date_offset}&deltatype=${limit.deltatype}"
+    }
 
     /**
      * The function is a utility that helps to parse the error that occurred when

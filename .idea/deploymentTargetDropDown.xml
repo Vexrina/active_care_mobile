@@ -11,6 +11,9 @@
       <entry key="ShowStepsComponent">
         <State />
       </entry>
+      <entry key="ShowWeightChangesComponent">
+        <State />
+      </entry>
       <entry key="app">
         <State />
       </entry>

@@ -27,7 +27,7 @@ fun AddFoodRecordView(
     onProteinsChanged: (String)->Unit,
     onFatsChanged: (String)->Unit,
     onCarbohydratesChanged: (String)->Unit,
-    onAddFoodRecordClicked: ()->Unit,
+    onAddFoodRecordClicked: (String)->Unit,
 ) {
     val focusManager = LocalFocusManager.current
     Column(
@@ -105,7 +105,9 @@ fun AddFoodRecordView(
                 .fillMaxWidth()
                 .height(60.dp),
             text = stringResource(id = R.string.addCaloriesButton),
-            onClick = {onAddFoodRecordClicked.invoke()}
+            onClick = {
+                onAddFoodRecordClicked.invoke("")
+            }
         )
     }
 }
