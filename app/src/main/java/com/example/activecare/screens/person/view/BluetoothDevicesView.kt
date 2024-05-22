@@ -21,6 +21,7 @@ fun BluetoothDevicesView(
     state: BluetoothViewState,
     onStartScan: () -> Unit,
     onStopScan: () -> Unit,
+    onDeviceClicked: (com.example.activecare.screens.person.domain.BluetoothDeviceDomain)->Unit,
 ) {
     Column(
         modifier = Modifier
@@ -30,7 +31,9 @@ fun BluetoothDevicesView(
         BluetoothDeviceList(
             title = stringResource(id = R.string.PairedDevices),
             devices = state.pairedDevices,
-            onClick = {},
+            onClick = {
+                onDeviceClicked.invoke(it)
+            },
             modifier = Modifier
                 .fillMaxWidth()
         )
@@ -58,7 +61,9 @@ fun BluetoothDevicesView(
         BluetoothDeviceList(
             title = stringResource(id = R.string.ScannedDevices),
             devices = state.scannedDevices,
-            onClick = {},
+            onClick = {
+                onDeviceClicked.invoke(it)
+            },
             modifier = Modifier
                 .padding(top = 24.dp)
                 .fillMaxWidth()

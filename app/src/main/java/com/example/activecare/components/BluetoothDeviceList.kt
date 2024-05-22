@@ -1,5 +1,6 @@
 package com.example.activecare.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,14 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.activecare.screens.person.domain.BluetoothDevice
+import com.example.activecare.screens.person.domain.BluetoothDeviceDomain
 import com.example.activecare.ui.theme.AppTheme
 
 @Composable
 fun BluetoothDeviceList(
     title: String,
-    devices: List<BluetoothDevice>,
-    onClick: (BluetoothDevice) -> Unit,
+    devices: List<BluetoothDeviceDomain>,
+    onClick: (BluetoothDeviceDomain) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -38,6 +39,11 @@ fun BluetoothDeviceList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
+                    .clickable(
+                        onClick = {
+                            onClick.invoke(device)
+                        }
+                    )
             )
         }
     }

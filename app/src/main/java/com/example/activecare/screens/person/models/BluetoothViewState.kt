@@ -1,9 +1,9 @@
 package com.example.activecare.screens.person.models
 
-import com.example.activecare.screens.person.domain.BluetoothDevice
+import com.example.activecare.screens.person.domain.BluetoothDeviceDomain
 
 data class BluetoothViewState(
-    val scannedDevices: List<BluetoothDevice> = emptyList(),
-    val pairedDevices: List<BluetoothDevice> = emptyList(),
+    val scannedDevices: List<BluetoothDeviceDomain> = emptyList(),
+    val pairedDevices: List<BluetoothDeviceDomain> = emptyList(),
 
     )
