@@ -83,8 +83,6 @@ class AndroidBluetoothController(
     }
 
     private var bluetoothGatt: BluetoothGatt? = null
-    private var currentServerSocket: BluetoothServerSocket? = null
-    private var currentClientSocket: BluetoothSocket? = null
 
     init {
         updatePairedDevices()
@@ -192,7 +190,6 @@ class AndroidBluetoothController(
         ) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
-//                characteristic.uuid
                 val data = characteristic.uuid
                 Log.d(TAG, data.toString())
                 val value = characteristic.value
@@ -204,7 +201,6 @@ class AndroidBluetoothController(
             // Handle characteristic changes
             val data = characteristic.value
             Log.d(TAG, "Characteristic changed: ${data.toHexString()}")
-//            Log.d(TAG, "Characteristic changed: ${data.toHexString()}")
         }
     }
 }

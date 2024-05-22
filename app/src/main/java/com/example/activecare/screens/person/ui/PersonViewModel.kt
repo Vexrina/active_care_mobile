@@ -1,26 +1,31 @@
 package com.example.activecare.screens.person.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.activecare.common.EventHandler
+import com.example.activecare.dataclasses.Limitation
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.person.domain.BluetoothController
+import com.example.activecare.screens.person.domain.BluetoothDeviceDomain
 import com.example.activecare.screens.person.models.BluetoothViewState
 import com.example.activecare.screens.person.models.PersonEvent
 import com.example.activecare.screens.person.models.PersonSubState
 import com.example.activecare.screens.person.models.PersonViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PersonViewModel @Inject constructor(
-    apiService: ApiService,
+    private val apiService: ApiService,
     private val bluetoothController: BluetoothController,
 ) : ViewModel(), EventHandler<PersonEvent> {
     private val _viewState: MutableStateFlow<PersonViewState> = MutableStateFlow(PersonViewState())
@@ -55,6 +60,9 @@ class PersonViewModel @Inject constructor(
             PersonEvent.DevicesSettingsClicked -> changeSubState(PersonSubState.DeviceSettings)
             PersonEvent.BluetoothStartScanClicked -> startScan()
             PersonEvent.BluetoothStopScanClicked -> stopScan()
+            is PersonEvent.DateChanged -> dateChanged(event.value)
+            is PersonEvent.LoadData -> loadData(event.value)
+            is PersonEvent.BluetoothDeviceClicked -> connectToDevice(event.value)
         }
     }
 
@@ -67,6 +75,17 @@ class PersonViewModel @Inject constructor(
         ) {
             changeSubState(PersonSubState.Settings)
         } else {
+            if (_viewState.value.personSubState in listOf(
+                    PersonSubState.Stat,
+                    PersonSubState.Workouts,
+                )
+            ) {
+                _viewState.update {
+                    it.copy(
+                        selectedDate = ""
+                    )
+                }
+            }
             changeSubState(PersonSubState.Default)
         }
     }
@@ -85,5 +104,78 @@ class PersonViewModel @Inject constructor(
 
     private fun stopScan() {
         bluetoothController.stopDiscovery()
+    }
+
+    private fun connectToDevice(device: BluetoothDeviceDomain) {
+        bluetoothController.connectToDevice(device)
+    }
+
+    private fun dateChanged(value: String) {
+        _viewState.update {
+            it.copy(
+                selectedDate = value
+            )
+        }
+    }
+
+    private fun loadData(limit: Limitation) {
+        Log.d("PVM", "HERE1")
+        if (_viewState.value.personSubState == PersonSubState.Stat) {
+            loadStatData(limit)
+        } else if (_viewState.value.personSubState == PersonSubState.Workouts) {
+            loadWorkoutData(limit)
+        }
+    }
+
+    private fun loadStatData(limit: Limitation) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _viewState.update {
+                it.copy(
+                    isLoad = true,
+                    limit = Limitation(limit.date, date_offset = 0),
+                )
+            }
+
+            val response = apiService.getStatActivityAndMeasure(
+                _viewState.value.selectedDate.substring(0, 10)
+            )
+
+            if (response.second != null) {
+                Log.d("PVM", response.second!!.message!!)
+            }
+
+            _viewState.update {
+                it.copy(
+                    stats = Pair(response.first.activity, response.first.measure),
+                    isLoad = false,
+                )
+            }
+            Log.d("pvm", _viewState.value.stats.toString())
+        }
+    }
+
+    private fun loadWorkoutData(limit: Limitation) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _viewState.update {
+                it.copy(
+                    isLoad = true,
+                    limit = limit,
+                )
+            }
+            val response = apiService.getWorkoutActivityAndMeasure(
+                _viewState.value.selectedDate.substring(0, 10)
+            )
+
+            if (response.second != null) {
+                Log.d("PVM", response.second!!.message!!)
+            }
+
+            _viewState.update {
+                it.copy(
+                    workout = Pair(response.first.activity, response.first.measure),
+                    isLoad = false,
+                )
+            }
+        }
     }
 }

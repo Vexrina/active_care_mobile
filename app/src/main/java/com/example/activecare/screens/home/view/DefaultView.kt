@@ -18,7 +18,7 @@ import com.example.activecare.ui.theme.AppTheme
 @Composable
 fun DefaultView(
     viewState: HomeViewState,
-    onClickEvents: List<()->Unit>
+    onClickEvents: List<() -> Unit>,
 ) {
     val categories = listOf(
         stringResource(id = R.string.homeHeaderPulse),
@@ -45,14 +45,21 @@ fun DefaultView(
                         0,
                         0f,
                         0,
-                        viewState.stats[0].weight,
+                        weight = if (viewState.stats.isNotEmpty()) viewState.stats[0].weight else 0f,
                         0
                     ),
                     idx = it,
                     foodRecords = filteredRecords,
                 ) + whatDim(it),
-                onClick = {onClickEvents[it].invoke()},
-                containerColor = if (it in listOf(1,4,5)) AppTheme.colors.LightBack else Color.Gray
+                onClick = { onClickEvents[it].invoke() },
+                containerColor = if (
+                    it in listOf
+                        (
+//                        0, 2, 3,
+                        1, 4, 5
+                    )
+                )
+                    AppTheme.colors.LightBack else Color.Gray
             )
         }
     }
@@ -62,22 +69,23 @@ private fun whatValue(
     stat: Stat,
     idx: Int,
     foodRecords: List<FoodRecord>,
-): String{
-    return when(idx){
+): String {
+    return when (idx) {
         0 -> stat.pulse
         1 -> stat.weight
-        2 -> "${stat.sleep/100} ч ${stat.sleep%100} мин"
+        2 -> "${stat.sleep / 100} ч ${stat.sleep % 100} мин"
         3 -> stat.oxygen_blood
         4 -> foodRecords.sumOf {
             it.calories
         }
-        5 -> stat.water*250
+
+        5 -> stat.water * 250
         else -> ""
     }.toString()
 }
 
-private fun whatDim(idx:Int): String{
-    return when(idx){
+private fun whatDim(idx: Int): String {
+    return when (idx) {
         0 -> " уд/мин"
         1 -> " кг"
         2 -> ""

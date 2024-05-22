@@ -12,6 +12,11 @@ val DateTimeParser: DateTimeFormatter = DateTimeFormatter.ofPattern(
     Locale.ENGLISH
 )
 
+val EndDateParser: DateTimeFormatter = DateTimeFormatter.ofPattern(
+    "uuuu-MM-dd'T23:59:59'",
+    Locale.ENGLISH
+)
+
 fun simpleDateTimeParser(date: Calendar):String{
     return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH).format(date.time)
 }

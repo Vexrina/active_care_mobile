@@ -1,35 +1,59 @@
 package com.example.activecare.screens.person.view
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
+import com.example.activecare.common.simpleDateTimeParser
 import com.example.activecare.components.BoxedText
+import com.example.activecare.components.ChooseDateComponent
 import com.example.activecare.components.TextComponent
+import com.example.activecare.dataclasses.Limitation
 import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.theme.AppTheme
+import java.util.Calendar
 
 @Composable
 fun StatView(
     viewState: PersonViewState,
-    chooseDate: () -> Unit,
+    date: Calendar = Calendar.getInstance(),
+    onDataLoad: (Limitation) -> Unit,
+    onChangeDate: (String) -> Unit,
 ) {
-    if (viewState.stats == null) {
+    var currentDate by remember { mutableStateOf(date) }
+    var currentDateString by remember {
+        mutableStateOf(simpleDateTimeParser(currentDate))
+    }
+
+    var stats by remember {
+        mutableStateOf(viewState.stats)
+    }
+
+    LaunchedEffect(viewState.stats) {
+        stats = viewState.stats
+    }
+
+    LaunchedEffect(currentDate) {
+        onChangeDate.invoke(currentDateString)
+        val newLimit = Limitation(date = currentDateString, date_offset = 0)
+        onDataLoad.invoke(newLimit)
+    }
+
+    if (viewState.isLoad) {
         Box(
             Modifier.padding(100.dp)
         ) {
@@ -39,30 +63,25 @@ fun StatView(
             )
         }
     } else {
-        Row(
-            modifier = Modifier
-                .padding(top = 18.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            TextComponent(
-                text = viewState.stats.first.dateStamp,
-                modifier = Modifier
-                    .padding(start = 48.dp),
-                textSize = 22.sp,
-                textColor = AppTheme.colors.LightText,
-                textAlign = TextAlign.Start,
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.triangle),
-                contentDescription = "go workout",
-                tint = AppTheme.colors.LightText,
-                modifier = Modifier
-                    .padding(start = 12.dp, top = 6.dp)
-                    .size(16.dp)
-                    .clickable(onClick = chooseDate),
-            )
-        }
+        ChooseDateComponent(
+            date = currentDate,
+            onBackClick = {
+                val newDate = Calendar.getInstance()
+                newDate.time = currentDate.time
+                newDate.add(Calendar.DATE, -1)
+                currentDate = newDate
+                currentDateString = simpleDateTimeParser(currentDate)
+            },
+            onNextClick = {
+                val newDate = Calendar.getInstance()
+                newDate.time = currentDate.time
+                newDate.add(Calendar.DATE, 1)
+                if (newDate.before(Calendar.getInstance())) {
+                    currentDate = newDate
+                    currentDateString = simpleDateTimeParser(currentDate)
+                }
+            }
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -84,7 +103,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatActivityStep),
-            value = "${viewState.stats.first.steps} шаг"
+            value = "${stats.first.steps} шаг"
         )
         BoxedText(
             modifier = Modifier
@@ -93,7 +112,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatActivityDistance),
-            value = "${viewState.stats.first.distance} км"
+            value = "${stats.first.distance} км"
         )
         BoxedText(
             modifier = Modifier
@@ -102,7 +121,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatActivityCalories),
-            value = "${viewState.stats.first.calories} ккал"
+            value = "${stats.first.calories} ккал"
         )
         Box(
             modifier = Modifier
@@ -125,7 +144,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatMeasureWeight),
-            value = "${viewState.stats.second.weight} кг"
+            value = "${stats.second.weight} кг"
         )
         BoxedText(
             modifier = Modifier
@@ -134,7 +153,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatMeasureSleep),
-            value = "${viewState.stats.second.sleep} часов"
+            value = "${stats.second.sleep / 100} ч. ${stats.second.sleep % 100} мин."
         )
         BoxedText(
             modifier = Modifier
@@ -143,7 +162,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatMeasurePulse),
-            value = "${viewState.stats.second.pulse} уд/мин"
+            value = "${stats.second.pulse} уд/мин"
         )
         BoxedText(
             modifier = Modifier
@@ -152,7 +171,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatMeasureSpO2),
-            value = "${viewState.stats.second.spO2}%"
+            value = "${stats.second.spO2}%"
         )
         BoxedText(
             modifier = Modifier
@@ -161,7 +180,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatMeasureCalories),
-            value = "${viewState.stats.second.calories} ккал"
+            value = "${stats.second.calories} ккал"
         )
     }
 }

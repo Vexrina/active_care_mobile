@@ -7,7 +7,6 @@ import com.example.activecare.cache.domain.Cache
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.network.domain.ApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -29,10 +28,10 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             if (!checkTokens()){
                 _nextScreen.value = NavigationTree.Onboard.name
+                _isLoading.value = false
                 return@launch
             }
             checkConnection()
-            delay(100)
             _isLoading.value = false
         }
     }

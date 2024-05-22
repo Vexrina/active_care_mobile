@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.activecare.R
+import com.example.activecare.common.simpleStringParser
 import com.example.activecare.components.BottomNavigationBar
 import com.example.activecare.components.Header
 import com.example.activecare.navigation.NavigationTree
@@ -30,6 +31,7 @@ import com.example.activecare.screens.person.view.ProfileSettings
 import com.example.activecare.screens.person.view.SettingView
 import com.example.activecare.screens.person.view.StatView
 import com.example.activecare.screens.person.view.WorkoutView
+import java.util.Calendar
 
 @Composable
 fun PersonScreen(
@@ -42,6 +44,7 @@ fun PersonScreen(
     val bluetoothViewState: BluetoothViewState by personViewModel
         .bluetoothState
         .collectAsState()
+
     with(viewState) {
         Scaffold(
             topBar = {
@@ -90,12 +93,34 @@ fun PersonScreen(
 
                         PersonSubState.Stat -> StatView(
                             viewState = this@with,
-                            chooseDate = {}
+                            onChangeDate = {
+                                personViewModel.obtainEvent(
+                                    PersonEvent.DateChanged(it)
+                                )
+                            },
+                            onDataLoad ={
+                                personViewModel.obtainEvent(
+                                    PersonEvent.LoadData(it)
+                                )
+                            },
+                            date = if (viewState.selectedDate == "") Calendar.getInstance()
+                            else simpleStringParser(viewState.selectedDate)
                         )
 
                         PersonSubState.Workouts -> WorkoutView(
                             viewState = this@with,
-                            chooseDate = {}
+                            onChangeDate = {
+                                personViewModel.obtainEvent(
+                                    PersonEvent.DateChanged(it)
+                                )
+                            },
+                            onDataLoad ={
+                                personViewModel.obtainEvent(
+                                    PersonEvent.LoadData(it)
+                                )
+                            },
+                            date = if (viewState.selectedDate == "") Calendar.getInstance()
+                            else simpleStringParser(viewState.selectedDate)
                         )
 
                         PersonSubState.Recommendations -> TODO()
@@ -103,6 +128,9 @@ fun PersonScreen(
                             state = bluetoothViewState,
                             onStartScan = {
                                 personViewModel.obtainEvent(PersonEvent.BluetoothStartScanClicked)
+                            },
+                            onDeviceClicked = {
+                                personViewModel.obtainEvent(PersonEvent.BluetoothDeviceClicked(it))
                             },
                             onStopScan = {
                                 personViewModel.obtainEvent(PersonEvent.BluetoothStopScanClicked)

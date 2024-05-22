@@ -2,14 +2,22 @@ package com.example.activecare.network.data
 
 import android.util.Log
 import com.example.activecare.cache.domain.Cache
+import com.example.activecare.common.averageInStats
+import com.example.activecare.common.filterWorkoutsByWorkoutTypeAndCalculateSum
+import com.example.activecare.dataclasses.ActivityStat
+import com.example.activecare.dataclasses.ActivityWorkout
 import com.example.activecare.dataclasses.FoodRecord
 import com.example.activecare.dataclasses.GetTokens
 import com.example.activecare.dataclasses.Limitation
 import com.example.activecare.dataclasses.LoginJson
+import com.example.activecare.dataclasses.MeasureStat
+import com.example.activecare.dataclasses.MeasureWorkout
+import com.example.activecare.dataclasses.PersonStatistic
 import com.example.activecare.dataclasses.Stat
 import com.example.activecare.dataclasses.User
 import com.example.activecare.dataclasses.WatchStat
 import com.example.activecare.dataclasses.Workout
+import com.example.activecare.dataclasses.WorkoutStatistic
 import com.example.activecare.network.domain.ApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -32,6 +40,8 @@ class ApiServiceImpl @Inject constructor(
     private val client: HttpClient,
     private val cache: Cache,
 ) : ApiService {
+
+
     override suspend fun login(loginData: LoginJson): Pair<GetTokens?, Error?> {
         return try {
             val response = client.post {
@@ -206,7 +216,6 @@ class ApiServiceImpl @Inject constructor(
                 url(createGetUrl(limit, ApiRoutes.FOOD_RECORD))
                 contentType(ContentType.Application.Json)
             }
-            Log.d("APISERVICE", response.body())
             Pair(response.body<List<FoodRecord>>(), null)
         } catch (ex: Exception) {
             Pair(emptyList(), catchRequestsErrors(ex))
@@ -247,6 +256,111 @@ class ApiServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getStatActivityAndMeasure(date: String): Pair<PersonStatistic, Error?>{
+        val nullableStat = PersonStatistic(activity = ActivityStat(), measure = MeasureStat())
+        try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(nullableStat, Error("No tokens in SharedPreferences"))
+            }
+            val limit = Limitation(
+                date = date+"T23:59:59",
+                date_offset = 1
+            )
+            val response1 = getUserStat(limit)
+            if (response1.second != null){
+                return Pair(nullableStat, response1.second)
+            }
+            val response2 = getUserFoodRecords(limit)
+            if (response2.second != null){
+                return Pair(nullableStat, response2.second)
+            }
+            val response3 = getUserWorkouts(limit)
+            if (response3.second != null){
+                return Pair(nullableStat, response3.second)
+            }
+            val activityStat = ActivityStat(
+                date_stamp = date,
+                steps = if (response1.first.isNotEmpty()) response1.first[0].steps else 0,
+                distance = response3.first.sumOf {
+                    it.distance.toDouble()
+                }.toFloat(),
+                calories = response3.first.sumOf {
+                    it.burned_calories
+                }
+            )
+            val avg = averageInStats(response1.first)
+            val measureStat = MeasureStat(
+                date_stamp = date,
+                weight = if (response1.first.isNotEmpty()) response1.first[0].weight else 0f,
+                sleep = if (response1.first.isNotEmpty()) response1.first[0].sleep else 0,
+                pulse = avg.first.toInt(),
+                spO2 = avg.second.toInt(),
+                calories = response2.first.sumOf {
+                    it.calories
+                }
+            )
+            return Pair(PersonStatistic(activityStat, measureStat), null)
+        } catch (ex: Exception){
+            return Pair(
+                nullableStat,
+                catchRequestsErrors(ex)
+            )
+        }
+    }
+
+    override suspend fun getWorkoutActivityAndMeasure(date: String): Pair<WorkoutStatistic, Error?>{
+        val nullableStat = WorkoutStatistic(activity = ActivityWorkout(), measure = MeasureWorkout())
+        try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(nullableStat, Error("No tokens in SharedPreferences"))
+            }
+            val limit = Limitation(
+                date = date+"T23:59:59",
+            )
+            val response1 = getUserStat(limit)
+            if (response1.second != null){
+                return Pair(nullableStat, response1.second)
+            }
+
+            val response2 = getUserWorkouts(limit)
+            if (response2.second != null){
+                return Pair(nullableStat, response2.second)
+            }
+
+            val activityWorkout = ActivityWorkout(
+                date_stamp = date,
+                totalDistance = response2.first.sumOf { it.distance.toDouble() }.toFloat(),
+                streetRun = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 0),
+                trackRun = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 1),
+                walking = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 2),
+                bike = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 3),
+            )
+            val avg = averageInStats(response1.first)
+            val measureWorkout = MeasureWorkout(
+                date_stamp = date,
+                pulse = avg.first.toInt(),
+                spO2 = avg.second.toInt(),
+            )
+
+            return Pair(WorkoutStatistic(activityWorkout, measureWorkout), null)
+        } catch (ex: Exception){
+            return Pair(
+                nullableStat,
+                catchRequestsErrors(ex)
+            )
+        }
+    }
+
+    /**
+     * The function is a utility that helps you create a url to
+     * access the server using query parameters
+     * @param limit By themselves, query parameters that are inserted into the url
+     * @param url The endpoint that needs query parameters
+     * @return The URL where you can go with a JWT token and get the necessary data
+     * in the required range.
+     */
     private fun createGetUrl(limit: Limitation, url: String): String{
         return url+"?date=${limit.date}&offset=${limit.date_offset}&deltatype=${limit.deltatype}"
     }
@@ -293,6 +407,7 @@ class ApiServiceImpl @Inject constructor(
             400 -> Error("Bad request")
             401 -> Error("Incorrect email or password or token expired")
             405 -> Error("Method not allowed")
+            422 -> Error("Bad data")
             else -> Error("Something wrong with ur data")
         }
     }
