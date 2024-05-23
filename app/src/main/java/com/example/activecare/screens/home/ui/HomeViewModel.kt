@@ -10,10 +10,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.activecare.common.EventHandler
 import com.example.activecare.common.cache.domain.Cache
+import com.example.activecare.common.dataclasses.EventTuple
 import com.example.activecare.common.filterByDate
 import com.example.activecare.common.simpleStringParser
 import com.example.activecare.common.dataclasses.FoodRecord
-import com.example.activecare.common.dataclasses.HomeEventTuple
 import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.common.dataclasses.Stat
 import com.example.activecare.common.getCurrentDate
@@ -201,8 +201,8 @@ class HomeViewModel @AssistedInject constructor(
         if (errorMessage != null) {
             viewModelScope.launch {
                 _viewState.value.eventChannel.send(
-                    HomeEventTuple(
-                        Event = HomeEvent.ErrorShown,
+                    EventTuple(
+                        HomeEvent = HomeEvent.ErrorShown,
                         Message = errorMessage,
                     )
                 )
@@ -213,8 +213,8 @@ class HomeViewModel @AssistedInject constructor(
     private fun sendSuccessEvent() {
         viewModelScope.launch {
             _viewState.value.eventChannel.send(
-                HomeEventTuple(
-                    Event = HomeEvent.BackClicked,
+                EventTuple(
+                    HomeEvent = HomeEvent.BackClicked,
                     Message = "",
                 )
             )

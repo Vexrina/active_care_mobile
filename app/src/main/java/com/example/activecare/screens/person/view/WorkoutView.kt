@@ -106,7 +106,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityTotalDistance),
-            value = "${workouts.first.totalDistance} км"
+            value = "${String.format("%.2f", workouts.first.totalDistance/1000)} км"
         )
         BoxedText(
             modifier = Modifier
@@ -115,7 +115,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityStreetRun),
-            value = "${workouts.first.streetRun} км"
+            value = "${String.format("%.2f", workouts.first.streetRun/1000)} км"
         )
         BoxedText(
             modifier = Modifier
@@ -124,7 +124,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityTrackRun),
-            value = "${workouts.first.trackRun} км"
+            value = "${String.format("%.2f", workouts.first.trackRun/1000)} км"
         )
         BoxedText(
             modifier = Modifier
@@ -133,7 +133,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityWalking),
-            value = "${workouts.first.walking} км"
+            value = "${String.format("%.2f", workouts.first.walking/1000)} км"
         )
         BoxedText(
             modifier = Modifier
@@ -142,7 +142,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityBike),
-            value = "${workouts.first.bike} км"
+            value = "${String.format("%.2f", workouts.first.bike/1000f)} км"
         )
         Box(
             modifier = Modifier

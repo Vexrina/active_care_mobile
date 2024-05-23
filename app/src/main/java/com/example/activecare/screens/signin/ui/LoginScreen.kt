@@ -99,7 +99,7 @@ fun LoginScreen(
                     LaunchedEffect(Unit) {
                         val eventChannel = viewState.eventChannel
                         eventChannel.consumeEach { event ->
-                            when (event.Event) {
+                            when (event.SignInEvent) {
                                 SignInEvent.ErrorShown -> Toast
                                     .makeText(
                                         context, event.Message, Toast.LENGTH_SHORT

@@ -187,7 +187,7 @@ fun HomeScreen(
                                 LaunchedEffect(Unit) {
                                     val eventChannel = viewState.eventChannel
                                     eventChannel.consumeEach { event ->
-                                        when (event.Event) {
+                                        when (event.HomeEvent) {
                                             HomeEvent.ErrorShown -> Toast
                                                 .makeText(
                                                     context, event.Message, Toast.LENGTH_SHORT

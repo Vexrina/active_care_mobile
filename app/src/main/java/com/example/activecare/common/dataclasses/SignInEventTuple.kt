@@ -1,8 +1,0 @@
-package com.example.activecare.common.dataclasses
-
-import com.example.activecare.screens.signin.models.SignInEvent
-
-data class SignInEventTuple(
-    val Event: SignInEvent,
-    val Message: String,
-)

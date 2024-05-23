@@ -1,6 +1,6 @@
 package com.example.activecare.screens.signin.models
 
-import com.example.activecare.common.dataclasses.SignInEventTuple
+import com.example.activecare.common.dataclasses.EventTuple
 import kotlinx.coroutines.channels.Channel
 
 data class SignInViewState(
@@ -14,5 +14,5 @@ data class SignInViewState(
     val loginAction: SignInAction = SignInAction.None,
     val phoneNumberValue: String = "",
     val errorMessage: String? = null,
-    val eventChannel: Channel<SignInEventTuple> = Channel(Channel.BUFFERED),
+    val eventChannel: Channel<EventTuple> = Channel(Channel.BUFFERED),
 )

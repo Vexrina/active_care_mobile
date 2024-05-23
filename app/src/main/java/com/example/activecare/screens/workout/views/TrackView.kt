@@ -13,10 +13,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.activecare.R
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.TextFieldComponent
 import com.example.activecare.screens.workout.models.WorkoutViewState
+import com.example.activecare.ui.components.TextComponent
+import com.example.activecare.ui.theme.AppTheme
 
 @Composable
 fun TrackView(
@@ -25,6 +28,7 @@ fun TrackView(
     onTimeEndChanged: (String) -> Unit,
     onDistanceChanged: (String) -> Unit,
     onCaloriesChanged: (String) -> Unit,
+    onButtonClicked: ()->Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val textFieldModifier = Modifier
@@ -100,6 +104,12 @@ fun TrackView(
         ),
     )
     ButtonComponent(text = "sometext", modifier = textFieldModifier.height(60.dp) ) {
-
+        onButtonClicked.invoke()
     }
+    TextComponent(
+        text = stringResource(id = R.string.TrackRunText),
+        modifier = Modifier.padding(24.dp),
+        textSize = 22.sp,
+        textColor = AppTheme.colors.LightText
+    )
 }

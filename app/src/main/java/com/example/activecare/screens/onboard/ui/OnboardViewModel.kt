@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.EventHandler
 import com.example.activecare.common.dataclasses.OnboardData
-import com.example.activecare.common.dataclasses.SignInEventTuple
+import com.example.activecare.common.dataclasses.EventTuple
 import com.example.activecare.screens.onboard.models.OnboardEvent
 import com.example.activecare.screens.onboard.models.OnboardSubState
 import com.example.activecare.screens.onboard.models.OnboardViewState
@@ -142,8 +142,8 @@ class OnboardViewModel @Inject constructor(
         if (errorMessage != null) {
             viewModelScope.launch {
                 _viewState.value.eventChannel.send(
-                    SignInEventTuple(
-                        Event = SignInEvent.ErrorShown,
+                    EventTuple(
+                        SignInEvent = SignInEvent.ErrorShown,
                         Message = errorMessage,
                     )
                 )
@@ -154,8 +154,8 @@ class OnboardViewModel @Inject constructor(
     private fun sendSuccessEvent() {
         viewModelScope.launch {
             _viewState.value.eventChannel.send(
-                SignInEventTuple(
-                    Event = SignInEvent.ActionClicked,
+                EventTuple(
+                    SignInEvent = SignInEvent.ActionClicked,
                     Message = "",
                 )
             )

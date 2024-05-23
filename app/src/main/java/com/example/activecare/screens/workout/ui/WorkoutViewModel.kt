@@ -7,10 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.activecare.ActiveCareApplication
 import com.example.activecare.common.EventHandler
 import com.example.activecare.common.calculateBurnedCalories
+import com.example.activecare.common.dataclasses.EventTuple
 import com.example.activecare.common.millisToDateStamp
 import com.example.activecare.common.dataclasses.TimeStamp
 import com.example.activecare.common.dataclasses.Workout
+import com.example.activecare.common.getCurrentDate
 import com.example.activecare.network.domain.ApiService
+import com.example.activecare.screens.home.models.HomeEvent
 import com.example.activecare.screens.workout.data.LocationHelper
 import com.example.activecare.screens.workout.models.WorkoutEvent
 import com.example.activecare.screens.workout.models.WorkoutSubState
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.osmdroid.util.Distance
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import javax.inject.Inject
@@ -67,6 +71,8 @@ class WorkoutViewModel @Inject constructor(
             WorkoutEvent.ChangeViewOnWorkoutStarted -> changeViewOnWorkout()
             is WorkoutEvent.ContinueWorkout -> unpauseWorkout(event.value)
             WorkoutEvent.SendData -> sendData()
+            WorkoutEvent.OnButtonClicked -> sendTrackData()
+            else -> {}
         }
     }
 
@@ -205,17 +211,94 @@ class WorkoutViewModel @Inject constructor(
         }
     }
     private fun changedTimeEnd(value: String){
+        val newValue = if (value.contains('.')){
+            value.replace('.', ':')
+        } else if (value.contains(',')){
+            value.replace(',',':')
+        } else{
+            value
+        }
         _viewState.update {
             it.copy(
-                trackEndTime = value
+                trackEndTime = newValue
             )
         }
     }
     private fun changedTimeStart(value: String){
+        val newValue = if (value.contains('.')){
+            value.replace('.', ':')
+        } else if (value.contains(',')){
+            value.replace(',',':')
+        } else{
+            value
+        }
         _viewState.update {
             it.copy(
-                trackStartTime = value
+                trackStartTime = newValue
             )
+        }
+    }
+
+    private fun sendTrackData(){
+        if (!isValidTime(_viewState.value.trackStartTime)){
+            sendErrorEvent("Вы ввели некоректное время старта")
+            return
+        }
+        if (!isValidTime(_viewState.value.trackEndTime)){
+            sendErrorEvent("Вы ввели некоректное время конца")
+            return
+        }
+        try {
+            val distance = _viewState.value.trackDistance.toFloat()
+            val burnedCalories = _viewState.value.trackCalories.toInt()
+
+            viewModelScope.launch(Dispatchers.IO) {
+                val newWorkoutRecord = Workout(
+                    time_start = getCurrentDate()+"T"+_viewState.value.trackStartTime+":00",
+                    time_end = getCurrentDate()+"T"+_viewState.value.trackEndTime+":00",
+                    burned_calories = burnedCalories,
+                    avg_pulse = 0f,
+                    distance = distance,
+                    workout_type = 0,
+                )
+                val workoutError = apiService.appendUserData(newWorkoutRecord)
+                if(workoutError.second != null){
+                    sendErrorEvent(workoutError.second!!.message)
+                    return@launch
+                }
+                sendSuccessEvent()
+                changeSubState(WorkoutSubState.Default)
+            }
+        } catch(ex: Exception){
+            sendErrorEvent(ex.message)
+            return
+        }
+    }
+    private fun isValidTime(time: String): Boolean {
+        val timeRegex = Regex("^[0-2]{1}[0-9]{1}:[0-5]{1}[0-9]{1}\$")
+        return timeRegex.matches(time)
+    }
+    private fun sendSuccessEvent() {
+        viewModelScope.launch {
+            _viewState.value.eventChannel.send(
+                EventTuple(
+                    WorkoutEvent = WorkoutEvent.BackClicked,
+                    Message = "",
+                )
+            )
+        }
+    }
+
+    private fun sendErrorEvent(errorMessage: String?) {
+        if (errorMessage != null) {
+            viewModelScope.launch {
+                _viewState.value.eventChannel.send(
+                    EventTuple(
+                        WorkoutEvent = WorkoutEvent.ErrorShown,
+                        Message = errorMessage,
+                    )
+                )
+            }
         }
     }
 
@@ -228,7 +311,6 @@ class WorkoutViewModel @Inject constructor(
                 WorkoutSubState.StreetRun -> 1
                 WorkoutSubState.TrackRun -> 0
                 WorkoutSubState.Default -> 5
-                WorkoutSubState.WorkoutProccesing -> 5
             }
             val weightError = apiService.getUserWeight()
             if (weightError.second!=null){

@@ -7,7 +7,7 @@ import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.CacheProvider
 import com.example.activecare.common.EventHandler
 import com.example.activecare.common.dataclasses.LoginJson
-import com.example.activecare.common.dataclasses.SignInEventTuple
+import com.example.activecare.common.dataclasses.EventTuple
 import com.example.activecare.common.dataclasses.User
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.signin.models.SignInEvent
@@ -140,8 +140,8 @@ class LoginViewModel @AssistedInject constructor(
         if (errorMessage != null) {
             viewModelScope.launch {
                 _viewState.value.eventChannel.send(
-                    SignInEventTuple(
-                        Event = SignInEvent.ErrorShown,
+                    EventTuple(
+                        SignInEvent = SignInEvent.ErrorShown,
                         Message = errorMessage,
                     )
                 )
@@ -152,8 +152,8 @@ class LoginViewModel @AssistedInject constructor(
     private fun sendSuccessEvent() {
         viewModelScope.launch {
             _viewState.value.eventChannel.send(
-                SignInEventTuple(
-                    Event = SignInEvent.ActionClicked,
+                EventTuple(
+                    SignInEvent = SignInEvent.ActionClicked,
                     Message = "",
                 )
             )

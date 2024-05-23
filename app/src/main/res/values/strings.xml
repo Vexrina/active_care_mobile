@@ -105,11 +105,12 @@
     <string name="water_outlined">не выпит</string>
     <string name="waterInfo">Один стакан - 250 мл воды.\nЕжедневная норма - 2 литра воды.</string>
     <string name="addWeight">Добавить взвешивание</string>
-    <string name="distance">Преодаленное расстояние</string>
+    <string name="distance">Преодаленное расстояние в метрах</string>
     <string name="time">Время</string>
     <string name="burnedCalories">Сожженные калории</string>
     <string name="timeEndTraining">Время конца тренировки</string>
     <string name="timeStartTraining">Время старта тренировки</string>
     <string name="startWorkoutButton">Начать тренировку!</string>
     <string name="networkErrorScreen">Приложение не может установить соединение с сервером.\nПопробуйте позже :C</string>
+    <string name="TrackRunText">Используйте точку или запятую для разделения часов и минут</string>
 </resources>

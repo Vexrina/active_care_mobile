@@ -346,6 +346,7 @@ class ApiServiceImpl @Inject constructor(
             }
             val limit = Limitation(
                 date = date + "T23:59:59",
+                date_offset = 1,
             )
             val response1 = getUserStat(limit)
             if (response1.second != null){
@@ -360,8 +361,8 @@ class ApiServiceImpl @Inject constructor(
             val activityWorkout = ActivityWorkout(
                 date_stamp = date,
                 totalDistance = response2.first.sumOf { it.distance.toDouble() }.toFloat(),
-                streetRun = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 0),
-                trackRun = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 1),
+                streetRun = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 1),
+                trackRun = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 0),
                 walking = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 2),
                 bike = filterWorkoutsByWorkoutTypeAndCalculateSum(response2.first, 3),
             )

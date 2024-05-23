@@ -115,7 +115,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatActivityDistance),
-            value = "${stats.first.distance} км"
+            value = "${String.format("%.2f", stats.first.distance/1000)} км"
         )
         BoxedText(
             modifier = Modifier

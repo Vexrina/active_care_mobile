@@ -1,6 +1,6 @@
 package com.example.activecare.screens.onboard.models
 
-import com.example.activecare.common.dataclasses.SignInEventTuple
+import com.example.activecare.common.dataclasses.EventTuple
 import kotlinx.coroutines.channels.Channel
 
 data class OnboardViewState(
@@ -10,5 +10,5 @@ data class OnboardViewState(
     val height: String? = null,
     val birthdate: String? = null,
 
-    val eventChannel: Channel<SignInEventTuple> = Channel(Channel.BUFFERED),
+    val eventChannel: Channel<EventTuple> = Channel(Channel.BUFFERED),
 )
