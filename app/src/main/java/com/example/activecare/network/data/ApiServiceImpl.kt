@@ -1,23 +1,23 @@
 package com.example.activecare.network.data
 
 import android.util.Log
-import com.example.activecare.cache.domain.Cache
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.averageInStats
 import com.example.activecare.common.filterWorkoutsByWorkoutTypeAndCalculateSum
-import com.example.activecare.dataclasses.ActivityStat
-import com.example.activecare.dataclasses.ActivityWorkout
-import com.example.activecare.dataclasses.FoodRecord
-import com.example.activecare.dataclasses.GetTokens
-import com.example.activecare.dataclasses.Limitation
-import com.example.activecare.dataclasses.LoginJson
-import com.example.activecare.dataclasses.MeasureStat
-import com.example.activecare.dataclasses.MeasureWorkout
-import com.example.activecare.dataclasses.PersonStatistic
-import com.example.activecare.dataclasses.Stat
-import com.example.activecare.dataclasses.User
-import com.example.activecare.dataclasses.WatchStat
-import com.example.activecare.dataclasses.Workout
-import com.example.activecare.dataclasses.WorkoutStatistic
+import com.example.activecare.common.dataclasses.ActivityStat
+import com.example.activecare.common.dataclasses.ActivityWorkout
+import com.example.activecare.common.dataclasses.FoodRecord
+import com.example.activecare.common.dataclasses.GetTokens
+import com.example.activecare.common.dataclasses.Limitation
+import com.example.activecare.common.dataclasses.LoginJson
+import com.example.activecare.common.dataclasses.MeasureStat
+import com.example.activecare.common.dataclasses.MeasureWorkout
+import com.example.activecare.common.dataclasses.PersonStatistic
+import com.example.activecare.common.dataclasses.Stat
+import com.example.activecare.common.dataclasses.User
+import com.example.activecare.common.dataclasses.WatchStat
+import com.example.activecare.common.dataclasses.Workout
+import com.example.activecare.common.dataclasses.WorkoutStatistic
 import com.example.activecare.network.domain.ApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -256,15 +256,36 @@ class ApiServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getUserWeight(): Pair<Float?, Error?> {
+        return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(null, Error("No tokens in SharedPreferences"))
+            }
+            val response = client.get{
+                header("Authorization", "Bearer ${tokens.first}")
+                url(ApiRoutes.USER)
+                contentType(ContentType.Application.Json)
+            }
+            val weight = response.body<User>().weight
+            Pair(weight, null)
+        } catch (ex: Exception){
+            Pair(null, catchRequestsErrors(ex))
+        }
+    }
+
     override suspend fun getStatActivityAndMeasure(date: String): Pair<PersonStatistic, Error?>{
-        val nullableStat = PersonStatistic(activity = ActivityStat(), measure = MeasureStat())
+        val nullableStat = PersonStatistic(
+            activity = ActivityStat(),
+            measure = MeasureStat()
+        )
         try {
             val tokens = cache.getUsersData()
             if (tokens.first == "" || tokens.second == "") {
                 return Pair(nullableStat, Error("No tokens in SharedPreferences"))
             }
             val limit = Limitation(
-                date = date+"T23:59:59",
+                date = date + "T23:59:59",
                 date_offset = 1
             )
             val response1 = getUserStat(limit)
@@ -300,7 +321,11 @@ class ApiServiceImpl @Inject constructor(
                     it.calories
                 }
             )
-            return Pair(PersonStatistic(activityStat, measureStat), null)
+            return Pair(
+                PersonStatistic(
+                    activityStat,
+                    measureStat
+                ), null)
         } catch (ex: Exception){
             return Pair(
                 nullableStat,
@@ -310,14 +335,17 @@ class ApiServiceImpl @Inject constructor(
     }
 
     override suspend fun getWorkoutActivityAndMeasure(date: String): Pair<WorkoutStatistic, Error?>{
-        val nullableStat = WorkoutStatistic(activity = ActivityWorkout(), measure = MeasureWorkout())
+        val nullableStat = WorkoutStatistic(
+            activity = ActivityWorkout(),
+            measure = MeasureWorkout()
+        )
         try {
             val tokens = cache.getUsersData()
             if (tokens.first == "" || tokens.second == "") {
                 return Pair(nullableStat, Error("No tokens in SharedPreferences"))
             }
             val limit = Limitation(
-                date = date+"T23:59:59",
+                date = date + "T23:59:59",
             )
             val response1 = getUserStat(limit)
             if (response1.second != null){
@@ -344,7 +372,11 @@ class ApiServiceImpl @Inject constructor(
                 spO2 = avg.second.toInt(),
             )
 
-            return Pair(WorkoutStatistic(activityWorkout, measureWorkout), null)
+            return Pair(
+                WorkoutStatistic(
+                    activityWorkout,
+                    measureWorkout
+                ), null)
         } catch (ex: Exception){
             return Pair(
                 nullableStat,

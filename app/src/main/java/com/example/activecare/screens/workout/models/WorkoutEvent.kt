@@ -14,6 +14,7 @@ sealed class WorkoutEvent {
     data class CaloriesChanged(val value: String) : WorkoutEvent()
     data class DistanceChanged(val value: String) : WorkoutEvent()
     data object PauseWorkout : WorkoutEvent()
-    data class ContinueWorkout(val value: MapView): WorkoutEvent()
-    data object ChangeViewOnWorkoutStarted: WorkoutEvent()
+    data class ContinueWorkout(val value: MapView) : WorkoutEvent()
+    data object SendData : WorkoutEvent()
+    data object ChangeViewOnWorkoutStarted : WorkoutEvent()
 }

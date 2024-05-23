@@ -8,8 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.activecare.R
-import com.example.activecare.components.ButtonComponent
-import com.example.activecare.screens.workout.models.WorkoutViewState
+import com.example.activecare.ui.components.ButtonComponent
 
 @Composable
 fun DefaultView(

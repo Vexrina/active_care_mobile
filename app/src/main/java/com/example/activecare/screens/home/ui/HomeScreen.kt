@@ -21,8 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.activecare.R
 import com.example.activecare.common.simpleStringParser
-import com.example.activecare.components.BottomNavigationBar
-import com.example.activecare.components.Header
+import com.example.activecare.ui.components.BottomNavigationBar
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.screens.home.models.AddCaloriesState
 import com.example.activecare.screens.home.models.HomeEvent
@@ -41,6 +40,7 @@ import com.example.activecare.screens.home.view.DefaultView
 import com.example.activecare.screens.home.view.PlotView
 import com.example.activecare.screens.home.view.WaterView
 import com.example.activecare.screens.home.view.WeightView
+import com.example.activecare.ui.components.Header
 import kotlinx.coroutines.channels.consumeEach
 import java.util.Calendar
 
@@ -57,8 +57,11 @@ fun HomeScreen(
         .addCaloriesState
         .collectAsState()
 
+    val steps by homeViewModel.stepCount.collectAsState()
+
     LaunchedEffect(viewState.limit) {
         homeViewModel.obtainEvent(HomeEvent.LoadData(viewState.limit))
+        homeViewModel.startStepCounting()
     }
     val context = LocalContext.current
     with(viewState) {
@@ -90,7 +93,7 @@ fun HomeScreen(
                     if (viewState.isLoad){
                         CircularProgressIndicator(
                             modifier = Modifier
-                                .padding(top=100.dp)
+                                .padding(top = 100.dp)
                                 .size(80.dp)
                                 .align(Alignment.CenterHorizontally)
                         )
@@ -106,7 +109,8 @@ fun HomeScreen(
                                     { homeViewModel.obtainEvent(HomeEvent.SpO2Clicked) },
                                     { homeViewModel.obtainEvent(HomeEvent.CaloriesClicked) },
                                     { homeViewModel.obtainEvent(HomeEvent.WaterClicked) },
-                                )
+                                ),
+                                steps = steps
                             )
 
                             Pulse -> PlotView()

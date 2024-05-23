@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.activecare.R
-import com.example.activecare.components.ButtonComponent
-import com.example.activecare.components.TextComponent
+import com.example.activecare.ui.components.ButtonComponent
+import com.example.activecare.ui.components.TextComponent
 import com.example.activecare.screens.onboard.models.OnboardViewState
 import com.example.activecare.ui.theme.AppTheme
 

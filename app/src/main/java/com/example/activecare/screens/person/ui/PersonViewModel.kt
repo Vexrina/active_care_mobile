@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.activecare.common.EventHandler
-import com.example.activecare.dataclasses.Limitation
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.person.domain.BluetoothController
 import com.example.activecare.screens.person.domain.BluetoothDeviceDomain
@@ -132,7 +132,10 @@ class PersonViewModel @Inject constructor(
             _viewState.update {
                 it.copy(
                     isLoad = true,
-                    limit = Limitation(limit.date, date_offset = 0),
+                    limit = Limitation(
+                        limit.date,
+                        date_offset = 0
+                    ),
                 )
             }
 

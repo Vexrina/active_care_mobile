@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.activecare.R
 import com.example.activecare.common.simpleStringParser
-import com.example.activecare.components.BottomNavigationBar
-import com.example.activecare.components.Header
+import com.example.activecare.ui.components.BottomNavigationBar
+import com.example.activecare.ui.components.Header
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.screens.person.models.BluetoothViewState
 import com.example.activecare.screens.person.models.PersonEvent

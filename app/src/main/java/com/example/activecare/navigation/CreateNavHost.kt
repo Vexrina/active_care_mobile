@@ -1,13 +1,14 @@
 package com.example.activecare.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.activecare.cache.domain.Cache
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.home.ui.HomeScreen
 import com.example.activecare.screens.home.ui.HomeViewModel
@@ -72,7 +73,16 @@ fun CreateNavHost(
             )
         }
         composable(NavigationTree.Home.name) {
-            val homeViewModel = hiltViewModel<HomeViewModel>()
+            val context = LocalContext.current
+            val homeViewModel = hiltViewModel<HomeViewModel, HomeViewModel.HomeViewModelFactory>(
+                creationCallback = {homeViewModelFactory ->
+                    homeViewModelFactory.create(
+                        context=context,
+                        apiService = apiService,
+                        cache = cache,
+                    )
+
+                })
             HomeScreen(
                 homeViewModel = homeViewModel,
                 navController = navController

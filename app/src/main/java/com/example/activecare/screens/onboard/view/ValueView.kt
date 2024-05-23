@@ -11,10 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.activecare.R
-import com.example.activecare.components.TextComponent
-import com.example.activecare.components.TextFieldComponent
+import com.example.activecare.ui.components.TextComponent
+import com.example.activecare.ui.components.TextFieldComponent
 import com.example.activecare.screens.onboard.models.OnboardSubState
 import com.example.activecare.screens.onboard.models.OnboardViewState
 import com.example.activecare.ui.theme.AppTheme

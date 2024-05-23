@@ -19,10 +19,10 @@ import com.example.activecare.common.calculateEndDate
 import com.example.activecare.common.filterByFoodTypeAndDate
 import com.example.activecare.common.filterFRByDate
 import com.example.activecare.common.simpleDateTimeParser
-import com.example.activecare.components.ChooseDateComponent
-import com.example.activecare.components.FoodRecordComponent
-import com.example.activecare.components.SummaryFoodRecordComponent
-import com.example.activecare.dataclasses.Limitation
+import com.example.activecare.ui.components.ChooseDateComponent
+import com.example.activecare.ui.components.FoodRecordComponent
+import com.example.activecare.ui.components.SummaryFoodRecordComponent
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.screens.home.models.HomeViewState
 import java.util.Calendar
 
@@ -47,7 +47,8 @@ fun CaloriesView(
         Log.d("CVLE", currentDateString)
         if (currentDateString.substring(0,10) == calculateEndDate(limit).substring(0,10)){
             Log.d("CVLE", "ALARM")
-            val newLimit = Limitation(date = currentDateString)
+            val newLimit =
+                Limitation(date = currentDateString)
             endDate = calculateEndDate(newLimit)
             onDataLoad.invoke(newLimit)
         }

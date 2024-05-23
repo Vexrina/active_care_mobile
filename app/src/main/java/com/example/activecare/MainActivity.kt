@@ -7,14 +7,12 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import com.example.activecare.common.CacheProvider
 import com.example.activecare.navigation.CreateNavHost
@@ -36,6 +34,10 @@ class MainActivity : ComponentActivity() {
 
     private val isBluetoothEnabled: Boolean
         get() = bluetoothAdapter?.isEnabled == true
+
+    private val cache = CacheProvider.getCache()
+    private val apiService = ApiService.create(cache)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,14 +77,13 @@ class MainActivity : ComponentActivity() {
             PreferenceManager.getDefaultSharedPreferences(applicationContext)
         )
 
-        val cache = CacheProvider.getCache()
-        val apiService = ApiService.create(cache)
         setContent {
             ActiveCareTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = AppTheme.colors.background,
                 ) {
+
                     val navController = rememberNavController()
                     CreateNavHost(
                         navController = navController,

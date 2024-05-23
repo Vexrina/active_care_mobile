@@ -14,8 +14,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.activecare.R
-import com.example.activecare.components.ButtonComponent
-import com.example.activecare.components.TextFieldComponent
+import com.example.activecare.ui.components.ButtonComponent
+import com.example.activecare.ui.components.TextFieldComponent
 import com.example.activecare.screens.workout.models.WorkoutViewState
 
 @Composable

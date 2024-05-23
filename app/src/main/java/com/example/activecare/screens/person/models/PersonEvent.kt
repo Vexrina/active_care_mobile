@@ -1,6 +1,6 @@
 package com.example.activecare.screens.person.models
 
-import com.example.activecare.dataclasses.Limitation
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.screens.person.domain.BluetoothDeviceDomain
 
 sealed class PersonEvent {

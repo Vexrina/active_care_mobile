@@ -1,16 +1,16 @@
 package com.example.activecare.network.domain
 
-import com.example.activecare.cache.domain.Cache
-import com.example.activecare.dataclasses.FoodRecord
-import com.example.activecare.dataclasses.GetTokens
-import com.example.activecare.dataclasses.Limitation
-import com.example.activecare.dataclasses.LoginJson
-import com.example.activecare.dataclasses.PersonStatistic
-import com.example.activecare.dataclasses.Stat
-import com.example.activecare.dataclasses.User
-import com.example.activecare.dataclasses.WatchStat
-import com.example.activecare.dataclasses.Workout
-import com.example.activecare.dataclasses.WorkoutStatistic
+import com.example.activecare.common.cache.domain.Cache
+import com.example.activecare.common.dataclasses.FoodRecord
+import com.example.activecare.common.dataclasses.GetTokens
+import com.example.activecare.common.dataclasses.Limitation
+import com.example.activecare.common.dataclasses.LoginJson
+import com.example.activecare.common.dataclasses.PersonStatistic
+import com.example.activecare.common.dataclasses.Stat
+import com.example.activecare.common.dataclasses.User
+import com.example.activecare.common.dataclasses.WatchStat
+import com.example.activecare.common.dataclasses.Workout
+import com.example.activecare.common.dataclasses.WorkoutStatistic
 import com.example.activecare.network.data.ApiServiceImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -90,6 +90,7 @@ interface ApiService {
     suspend fun getUserFoodRecords(limit: Limitation): Pair<List<FoodRecord>, Error?>
     suspend fun getUserWorkouts(limit: Limitation): Pair<List<Workout>, Error?>
     suspend fun getUserStat(limit: Limitation): Pair<List<Stat>, Error?>
+    suspend fun getUserWeight(): Pair<Float?, Error?>
 
     suspend fun getStatActivityAndMeasure(date: String): Pair<PersonStatistic, Error?>
     suspend fun getWorkoutActivityAndMeasure(date: String): Pair<WorkoutStatistic, Error?>

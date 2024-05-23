@@ -3,7 +3,7 @@ package com.example.activecare.screens.splash
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.activecare.cache.domain.Cache
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.network.domain.ApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,13 +18,14 @@ class SplashViewModel @Inject constructor(
     private  val cache: Cache,
 ) : ViewModel() {
 
-    private val _isLoading = MutableStateFlow(true)
+    private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
     private var _nextScreen = MutableStateFlow(NavigationTree.Home.name)
     var nextScreen: StateFlow<String> = _nextScreen
 
     init {
+        _isLoading.value = true
         viewModelScope.launch {
             if (!checkTokens()){
                 _nextScreen.value = NavigationTree.Onboard.name

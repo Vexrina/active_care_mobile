@@ -15,8 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.activecare.R
-import com.example.activecare.components.BottomNavigationBar
-import com.example.activecare.components.Header
+import com.example.activecare.ui.components.BottomNavigationBar
+import com.example.activecare.ui.components.Header
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.screens.workout.models.WorkoutEvent
 import com.example.activecare.screens.workout.models.WorkoutSubState
@@ -97,6 +97,9 @@ fun WorkoutScreen(
                                 workoutStarted = {
                                     workoutViewModel.obtainEvent(WorkoutEvent.ChangeViewOnWorkoutStarted)
                                 },
+                                onSendDataClicked = {
+                                    workoutViewModel.obtainEvent(WorkoutEvent.SendData)
+                                }
                             )
                         }
                     }

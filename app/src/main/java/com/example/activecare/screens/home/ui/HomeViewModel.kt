@@ -1,32 +1,52 @@
 package com.example.activecare.screens.home.ui
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.activecare.common.EventHandler
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.filterByDate
 import com.example.activecare.common.simpleStringParser
-import com.example.activecare.dataclasses.FoodRecord
-import com.example.activecare.dataclasses.HomeEventTuple
-import com.example.activecare.dataclasses.Limitation
-import com.example.activecare.dataclasses.Stat
+import com.example.activecare.common.dataclasses.FoodRecord
+import com.example.activecare.common.dataclasses.HomeEventTuple
+import com.example.activecare.common.dataclasses.Limitation
+import com.example.activecare.common.dataclasses.Stat
+import com.example.activecare.common.getCurrentDate
+import com.example.activecare.common.getPrevDate
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.home.models.AddCaloriesState
 import com.example.activecare.screens.home.models.HomeEvent
 import com.example.activecare.screens.home.models.HomeSubState
 import com.example.activecare.screens.home.models.HomeViewState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val apiService: ApiService,
-) : ViewModel(), EventHandler<HomeEvent> {
+@HiltViewModel(assistedFactory = HomeViewModel.HomeViewModelFactory::class)
+class HomeViewModel @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted private val apiService: ApiService,
+    @Assisted private val cache: Cache,
+) : ViewModel(), EventHandler<HomeEvent>, SensorEventListener {
+    @AssistedFactory
+    interface HomeViewModelFactory {
+        fun create(
+            context: Context,
+            apiService: ApiService,
+            cache: Cache,
+        ): HomeViewModel
+    }
 
     private val _viewState: MutableStateFlow<HomeViewState> = MutableStateFlow(HomeViewState())
     val viewState: StateFlow<HomeViewState> = _viewState
@@ -270,11 +290,16 @@ class HomeViewModel @Inject constructor(
                 currentDate = simpleStringParser(_viewState.value.selectedDate)
             )
             try {
+                val steps = if (_viewState.value.selectedDate.startsWith(getCurrentDate())){
+                    _stepCount.value
+                } else if(filteredStats.isEmpty())
+                    _viewState.value.stats[0].steps
+                else 0
                 val newStat = if (filteredStats.isEmpty()) {
                     Stat(
                         date_stamp = _viewState.value.selectedDate,
                         pulse = 0f,
-                        steps = 0,
+                        steps = steps,
                         oxygen_blood = 0f,
                         sleep = 0,
                         weight = _viewState.value.newWeight.toFloat(),
@@ -284,7 +309,7 @@ class HomeViewModel @Inject constructor(
                     Stat(
                         date_stamp = _viewState.value.selectedDate,
                         pulse = _viewState.value.stats[0].pulse,
-                        steps = _viewState.value.stats[0].steps,
+                        steps = steps,
                         oxygen_blood = _viewState.value.stats[0].oxygen_blood,
                         sleep = _viewState.value.stats[0].sleep,
                         weight = _viewState.value.newWeight.toFloat(),
@@ -317,11 +342,16 @@ class HomeViewModel @Inject constructor(
                 currentDate = simpleStringParser(_viewState.value.selectedDate)
             )
             try {
+                val steps = if (_viewState.value.selectedDate.startsWith(getCurrentDate())){
+                    _stepCount.value
+                } else if(filteredStats.isEmpty())
+                    _viewState.value.stats[0].steps
+                else 0
                 val newStat = if (filteredStats.isEmpty()) {
                     Stat(
                         date_stamp = _viewState.value.selectedDate,
                         pulse = 0f,
-                        steps = 0,
+                        steps = steps,
                         oxygen_blood = 0f,
                         sleep = 0,
                         weight = _viewState.value.stats[0].weight,
@@ -331,11 +361,11 @@ class HomeViewModel @Inject constructor(
                     Stat(
                         date_stamp = _viewState.value.selectedDate,
                         pulse = _viewState.value.stats[0].pulse,
-                        steps = _viewState.value.stats[0].steps,
+                        steps = steps,
                         oxygen_blood = _viewState.value.stats[0].oxygen_blood,
                         sleep = _viewState.value.stats[0].sleep,
                         weight = _viewState.value.stats[0].weight,
-                        water = _viewState.value.stats[0].water+value,
+                        water = _viewState.value.stats[0].water + value,
                     )
                 }
                 val result = apiService.appendUserData(newStat)
@@ -351,4 +381,41 @@ class HomeViewModel @Inject constructor(
             Log.d("HVM", _viewState.value.stats[0].toString())
         }
     }
+
+    /**
+     * Below is the code for working with the pedometer built into the phone.
+     */
+
+    private val sensorManager: SensorManager =
+        context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    private val stepSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+
+    private val _totalSteps = MutableStateFlow(cache.getTotalSteps())
+    private val lastUpdateCache = cache.getLastUpdate()
+
+    private val badUpdate = (lastUpdateCache==null)||(lastUpdateCache==getPrevDate())
+
+    private val todaySteps = if(lastUpdateCache==getCurrentDate()) cache.getTodaySteps() else 0
+    private val _stepCount = MutableStateFlow(todaySteps)
+    val stepCount: StateFlow<Int> = _stepCount
+
+    fun startStepCounting() {
+        stepSensor?.also { step ->
+            sensorManager.registerListener(this, step, SensorManager.SENSOR_DELAY_UI)
+        }
+    }
+
+    override fun onSensorChanged(event: SensorEvent) {
+        if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
+            if(badUpdate || _totalSteps.value==0){
+                _totalSteps.value = event.values[0].toInt()
+                cache.setTotalSteps(_totalSteps.value, getCurrentDate())
+            }
+            _stepCount.value = event.values[0].toInt() - _totalSteps.value
+            cache.setTodaySteps(_stepCount.value)
+            Log.d("HVM", "HERE")
+        }
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
 }

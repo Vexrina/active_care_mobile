@@ -8,10 +8,10 @@ import androidx.compose.ui.res.stringResource
 import com.example.activecare.R
 import com.example.activecare.common.filterByDate
 import com.example.activecare.common.filterFRByDate
-import com.example.activecare.components.CardComponent
-import com.example.activecare.components.StepsComponent
-import com.example.activecare.dataclasses.FoodRecord
-import com.example.activecare.dataclasses.Stat
+import com.example.activecare.ui.components.CardComponent
+import com.example.activecare.ui.components.StepsComponent
+import com.example.activecare.common.dataclasses.FoodRecord
+import com.example.activecare.common.dataclasses.Stat
 import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.theme.AppTheme
 
@@ -19,6 +19,7 @@ import com.example.activecare.ui.theme.AppTheme
 fun DefaultView(
     viewState: HomeViewState,
     onClickEvents: List<() -> Unit>,
+    steps: Int,
 ) {
     val categories = listOf(
         stringResource(id = R.string.homeHeaderPulse),
@@ -31,7 +32,7 @@ fun DefaultView(
     val filteredRecords = filterFRByDate(viewState.foodRecord)
     val filteredStat = filterByDate(viewState.stats)
     StepsComponent(
-        currentProgress = if (filteredStat.isNotEmpty()) filteredStat[0].steps else 0,
+        currentProgress = steps,
         maxProgress = 10000,
     )
     LazyVerticalGrid(columns = GridCells.Fixed(2)) {

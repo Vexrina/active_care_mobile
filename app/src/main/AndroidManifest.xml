@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    
+
+<!--    To get information from the watch   -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
-<!--    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />-->
-    
-    <uses-feature android:name="android.hardware.bluetooth" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+<!--    <uses-feature android:name="android.hardware.bluetooth" />-->
     <uses-feature android:name="android.hardware.bluetooth_le" />
+
+<!--    To receive and send information to the server   -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
+<!--    To get information about the current location (workouts)    -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    
+
+<!--    To calculate the number of steps    -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+
     <application
         android:name=".ActiveCareApplication"
         android:allowBackup="true"

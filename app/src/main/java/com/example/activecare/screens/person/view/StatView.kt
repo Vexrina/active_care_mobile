@@ -19,10 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
 import com.example.activecare.common.simpleDateTimeParser
-import com.example.activecare.components.BoxedText
-import com.example.activecare.components.ChooseDateComponent
-import com.example.activecare.components.TextComponent
-import com.example.activecare.dataclasses.Limitation
+import com.example.activecare.ui.components.BoxedText
+import com.example.activecare.ui.components.ChooseDateComponent
+import com.example.activecare.ui.components.TextComponent
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.theme.AppTheme
 import java.util.Calendar
@@ -49,7 +49,10 @@ fun StatView(
 
     LaunchedEffect(currentDate) {
         onChangeDate.invoke(currentDateString)
-        val newLimit = Limitation(date = currentDateString, date_offset = 0)
+        val newLimit = Limitation(
+            date = currentDateString,
+            date_offset = 0
+        )
         onDataLoad.invoke(newLimit)
     }
 

@@ -22,8 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.activecare.R
-import com.example.activecare.components.Header
-import com.example.activecare.components.LinkComponent
+import com.example.activecare.ui.components.Header
+import com.example.activecare.ui.components.LinkComponent
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.screens.signin.models.SignInEvent
 import com.example.activecare.screens.signin.models.SignInSubState

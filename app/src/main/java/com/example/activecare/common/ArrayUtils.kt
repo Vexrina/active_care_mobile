@@ -1,8 +1,8 @@
 package com.example.activecare.common
 
-import com.example.activecare.dataclasses.FoodRecord
-import com.example.activecare.dataclasses.Stat
-import com.example.activecare.dataclasses.Workout
+import com.example.activecare.common.dataclasses.FoodRecord
+import com.example.activecare.common.dataclasses.Stat
+import com.example.activecare.common.dataclasses.Workout
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
 import com.example.activecare.common.DateTimeParser
-import com.example.activecare.components.TextComponent
+import com.example.activecare.ui.components.TextComponent
 import com.example.activecare.ui.theme.AppTheme
 import java.time.Instant
 import java.time.ZoneOffset

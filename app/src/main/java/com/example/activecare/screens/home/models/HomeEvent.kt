@@ -1,6 +1,6 @@
 package com.example.activecare.screens.home.models
 
-import com.example.activecare.dataclasses.Limitation
+import com.example.activecare.common.dataclasses.Limitation
 
 sealed class HomeEvent {
     data class LoadData(val value: Limitation) : HomeEvent()

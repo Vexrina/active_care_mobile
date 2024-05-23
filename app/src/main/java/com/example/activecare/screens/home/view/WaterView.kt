@@ -24,10 +24,10 @@ import com.example.activecare.R
 import com.example.activecare.common.calculateEndDate
 import com.example.activecare.common.filterByDate
 import com.example.activecare.common.simpleDateTimeParser
-import com.example.activecare.components.ButtonComponent
-import com.example.activecare.components.ChooseDateComponent
-import com.example.activecare.components.TextComponent
-import com.example.activecare.dataclasses.Limitation
+import com.example.activecare.ui.components.ButtonComponent
+import com.example.activecare.ui.components.ChooseDateComponent
+import com.example.activecare.ui.components.TextComponent
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.theme.AppTheme
 import java.util.Calendar
@@ -58,7 +58,8 @@ fun WaterView(
         Log.d("WVLE", currentDateString)
         if (currentDateString.substring(0,10) == calculateEndDate(limit).substring(0,10)){
             Log.d("WVLE", "ALARM")
-            val newLimit = Limitation(date = currentDateString)
+            val newLimit =
+                Limitation(date = currentDateString)
             endDate = calculateEndDate(newLimit)
             onDataLoad.invoke(newLimit)
         }

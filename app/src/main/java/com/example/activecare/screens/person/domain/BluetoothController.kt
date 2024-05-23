@@ -10,7 +10,6 @@ interface BluetoothController {
     fun stopDiscovery()
 
     fun connectToDevice(device: BluetoothDeviceDomain)
-//    fun closeConnection()
 
     fun release()
 }

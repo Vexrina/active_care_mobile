@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.activecare.R
-import com.example.activecare.components.BoxedSwitchComponent
+import com.example.activecare.ui.components.BoxedSwitchComponent
 
 @Composable
 fun NotificationView() {

@@ -2,10 +2,10 @@ package com.example.activecare.screens.onboard.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.activecare.cache.domain.Cache
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.EventHandler
-import com.example.activecare.dataclasses.OnboardData
-import com.example.activecare.dataclasses.SignInEventTuple
+import com.example.activecare.common.dataclasses.OnboardData
+import com.example.activecare.common.dataclasses.SignInEventTuple
 import com.example.activecare.screens.onboard.models.OnboardEvent
 import com.example.activecare.screens.onboard.models.OnboardSubState
 import com.example.activecare.screens.onboard.models.OnboardViewState
@@ -112,12 +112,14 @@ class OnboardViewModel @Inject constructor(
     private fun saveToCache(){
         try {
             checkNullable()
-            cache.setOnboardData(OnboardData(
-                gender = _viewState.value.female,
-                weight = _viewState.value.weight!!.toFloat(),
-                height = _viewState.value.height!!.toFloat(),
-                birthDate = _viewState.value.birthdate,
-            ))
+            cache.setOnboardData(
+                OnboardData(
+                    gender = _viewState.value.female,
+                    weight = _viewState.value.weight!!.toFloat(),
+                    height = _viewState.value.height!!.toFloat(),
+                    birthDate = _viewState.value.birthdate,
+                )
+            )
             sendSuccessEvent()
         } catch (ex:Exception){
             when (ex){

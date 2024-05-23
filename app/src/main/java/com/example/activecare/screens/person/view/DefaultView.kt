@@ -15,8 +15,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
-import com.example.activecare.components.ButtonComponent
-import com.example.activecare.components.TextComponent
+import com.example.activecare.ui.components.ButtonComponent
+import com.example.activecare.ui.components.TextComponent
 import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.theme.AppTheme
 

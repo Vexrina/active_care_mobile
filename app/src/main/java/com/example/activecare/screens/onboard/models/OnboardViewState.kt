@@ -1,6 +1,6 @@
 package com.example.activecare.screens.onboard.models
 
-import com.example.activecare.dataclasses.SignInEventTuple
+import com.example.activecare.common.dataclasses.SignInEventTuple
 import kotlinx.coroutines.channels.Channel
 
 data class OnboardViewState(

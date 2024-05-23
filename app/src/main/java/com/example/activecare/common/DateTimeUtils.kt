@@ -1,10 +1,14 @@
 package com.example.activecare.common
 
-import com.example.activecare.dataclasses.Limitation
+import com.example.activecare.common.dataclasses.Limitation
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 val DateTimeParser: DateTimeFormatter = DateTimeFormatter.ofPattern(
@@ -29,6 +33,12 @@ fun simpleStringParser(dateString: String):Calendar{
     }
 }
 
+fun millisToDateStamp(millis: Long):String{
+    val instant = Instant.ofEpochMilli(millis)
+    val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+    return DateTimeParser.format(date)
+}
+
 fun calculateEndDate(limitation: Limitation): String{
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     val startDate = LocalDateTime.parse(limitation.date, formatter)
@@ -39,4 +49,14 @@ fun calculateEndDate(limitation: Limitation): String{
         "year" -> startDate.minusYears(limitation.date_offset.toLong())
         else -> startDate
     }.format(formatter)
+}
+
+fun getCurrentDate(): String {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    return dateFormat.format(Date())
+}
+
+fun getPrevDate(): String {
+    val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
+    return dateFormat.format(LocalDate.now().minusDays(1))
 }

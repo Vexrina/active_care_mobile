@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.activecare.ActiveCareApplication
 import com.example.activecare.common.EventHandler
-import com.example.activecare.dataclasses.TimeStamp
+import com.example.activecare.common.calculateBurnedCalories
+import com.example.activecare.common.millisToDateStamp
+import com.example.activecare.common.dataclasses.TimeStamp
+import com.example.activecare.common.dataclasses.Workout
 import com.example.activecare.network.domain.ApiService
-import com.example.activecare.screens.person.models.PersonSubState
 import com.example.activecare.screens.workout.data.LocationHelper
 import com.example.activecare.screens.workout.models.WorkoutEvent
 import com.example.activecare.screens.workout.models.WorkoutSubState
@@ -25,7 +27,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
-    apiService: ApiService,
+    private val apiService: ApiService,
 ) : ViewModel(), EventHandler<WorkoutEvent> {
 
     private val _viewState: MutableStateFlow<WorkoutViewState> = MutableStateFlow(WorkoutViewState())
@@ -64,6 +66,7 @@ class WorkoutViewModel @Inject constructor(
             WorkoutEvent.PauseWorkout -> pauseWorkout()
             WorkoutEvent.ChangeViewOnWorkoutStarted -> changeViewOnWorkout()
             is WorkoutEvent.ContinueWorkout -> unpauseWorkout(event.value)
+            WorkoutEvent.SendData -> sendData()
         }
     }
 
@@ -122,7 +125,11 @@ class WorkoutViewModel @Inject constructor(
         return System.currentTimeMillis() - _viewState.value.startedTime!! - _viewState.value.summaryPauseDuration
     }
 
-    private fun handleNewLocation(location: Location, endTime: Long, wasPause: Boolean = false) {
+    private fun handleNewLocation(
+        location: Location,
+        endTime: Long,
+        wasPause: Boolean = false
+    ) {
         val newDistance = if (_viewState.value.currentLocation != null && !wasPause) {
             _viewState.value.currentLocation!!.distanceTo(location)
         } else if (wasPause) {
@@ -209,6 +216,48 @@ class WorkoutViewModel @Inject constructor(
             it.copy(
                 trackStartTime = value
             )
+        }
+    }
+
+    private fun sendData(){
+        pauseWorkout()
+        viewModelScope.launch(Dispatchers.IO) {
+            val workoutType: Int = when(_viewState.value.workoutSubState){
+                WorkoutSubState.Bike -> 3
+                WorkoutSubState.Walking-> 2
+                WorkoutSubState.StreetRun -> 1
+                WorkoutSubState.TrackRun -> 0
+                WorkoutSubState.Default -> 5
+                WorkoutSubState.WorkoutProccesing -> 5
+            }
+            val weightError = apiService.getUserWeight()
+            if (weightError.second!=null){
+                Log.d("WVM", "${weightError.second}")
+                return@launch
+            }
+            val distance = _viewState.value.distance
+            val endTime = _viewState.value.endTime.millis/1000
+            val burnedCalories = calculateBurnedCalories(
+                seconds = endTime.toInt(),
+                distance = distance,
+                workoutType = workoutType,
+                weight = weightError.first!!
+            )
+            val newWorkoutRecord = Workout(
+                time_start = millisToDateStamp(_viewState.value.startedTime!!),
+                time_end = millisToDateStamp(pauseStartTime!!),
+                burned_calories = burnedCalories.toInt(),
+                avg_pulse = 0f,
+                distance = distance,
+                workout_type = workoutType,
+            )
+
+            val workoutError = apiService.appendUserData(newWorkoutRecord)
+            if(workoutError.second != null){
+                Log.d("WVM", workoutError.second!!.message!!)
+                return@launch
+            }
+            changeSubState(WorkoutSubState.Default)
         }
     }
 }

@@ -3,12 +3,12 @@ package com.example.activecare.screens.signin.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.activecare.cache.domain.Cache
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.CacheProvider
 import com.example.activecare.common.EventHandler
-import com.example.activecare.dataclasses.LoginJson
-import com.example.activecare.dataclasses.SignInEventTuple
-import com.example.activecare.dataclasses.User
+import com.example.activecare.common.dataclasses.LoginJson
+import com.example.activecare.common.dataclasses.SignInEventTuple
+import com.example.activecare.common.dataclasses.User
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.signin.models.SignInEvent
 import com.example.activecare.screens.signin.models.SignInSubState
@@ -247,7 +247,12 @@ class LoginViewModel @AssistedInject constructor(
                 return@launch
             }
             try {
-                val result = apiService.login(LoginJson(email, password))
+                val result = apiService.login(
+                    LoginJson(
+                        email,
+                        password
+                    )
+                )
                 if (result.second != null) {
                     sendErrorEvent(result.second!!.message)
                     return@launch
