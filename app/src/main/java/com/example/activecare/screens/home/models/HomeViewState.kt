@@ -20,4 +20,5 @@ data class HomeViewState(
     ),
 
     val eventChannel: Channel<EventTuple> = Channel(Channel.BUFFERED),
+    val sleep: String = ""
 )

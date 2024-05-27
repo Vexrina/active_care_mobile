@@ -44,7 +44,6 @@ fun PersonScreen(
     val bluetoothViewState: BluetoothViewState by personViewModel
         .bluetoothState
         .collectAsState()
-
     with(viewState) {
         Scaffold(
             topBar = {
@@ -88,6 +87,9 @@ fun PersonScreen(
                             },
                             onDevicesClick = {
                                 personViewModel.obtainEvent(PersonEvent.DevicesClicked)
+                            },
+                            loadData = {
+                                personViewModel.obtainEvent(PersonEvent.LoadData(it))
                             }
                         )
 
@@ -146,6 +148,10 @@ fun PersonScreen(
                             },
                             onDevicesClick = {
                                 personViewModel.obtainEvent(PersonEvent.DevicesSettingsClicked)
+                            },
+                            onLogoutClick = {
+                                personViewModel.obtainEvent(PersonEvent.onLogOutClicked)
+                                navController.navigate(NavigationTree.Onboard.name)
                             }
                         )
 

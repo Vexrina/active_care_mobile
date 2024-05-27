@@ -18,6 +18,7 @@ import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.common.dataclasses.Stat
 import com.example.activecare.common.getCurrentDate
 import com.example.activecare.common.getPrevDate
+import com.example.activecare.common.simpleDateTimeParser
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.home.models.AddCaloriesState
 import com.example.activecare.screens.home.models.HomeEvent
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @HiltViewModel(assistedFactory = HomeViewModel.HomeViewModelFactory::class)
 class HomeViewModel @AssistedInject constructor(
@@ -76,6 +78,8 @@ class HomeViewModel @AssistedInject constructor(
             is HomeEvent.DateChanged -> dateChanged(event.value)
             HomeEvent.AddWeight -> sendNewWeight()
             is HomeEvent.ChangeWater -> sendWater(event.value)
+            is HomeEvent.SleepChanged -> sleepChanged(event.value)
+            HomeEvent.SleepSend -> sendSleep()
             else -> {}
         }
     }
@@ -277,6 +281,53 @@ class HomeViewModel @AssistedInject constructor(
         }
     }
 
+    private fun sleepChanged(value: String){
+        _viewState.update {
+            it.copy(
+                sleep = value.replace('.', ':')
+            )
+        }
+    }
+
+    private fun sendSleep(){
+        val sleepValue = _viewState.value.sleep
+        if (!isValidTime(sleepValue)){
+            sendErrorEvent("Not valid time")
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val selectedDate =  simpleDateTimeParser(Calendar.getInstance())
+            _viewState.update {
+                it.copy(
+                    isLoad = true,
+                    selectedDate = selectedDate
+                )
+            }
+            val oldStats = if (_viewState.value.stats.isNotEmpty()) _viewState.value.stats[0]
+            else Stat("", 0f,0,0f,0,0f,0)
+            val sleepInt = (sleepValue.replace(':', '.').toFloat() * 100).toInt()
+            val (_, error) = apiService.appendUserData(
+                Stat(
+                    sleep=sleepInt,
+                    date_stamp = selectedDate,
+                    pulse = oldStats.pulse,
+                    steps = _stepCount.value,
+                    oxygen_blood = oldStats.pulse,
+                    weight =oldStats.weight,
+                    water = oldStats.water,
+                )
+            )
+            if (error != null){
+                sendErrorEvent(error.message)
+                return@launch
+            }
+            loadData(Limitation(_viewState.value.selectedDate, deltatype = "week", date_offset = 1))
+        }
+    }
+    private fun isValidTime(time: String): Boolean {
+        val timeRegex = Regex("^[0-2]{0,1}[0-9]{1}:[0-5]{1}[0-9]{1}\$")
+        return timeRegex.matches(time)
+    }
     private fun sendNewWeight() {
         viewModelScope.launch(Dispatchers.IO) {
             _viewState.update {

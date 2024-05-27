@@ -35,9 +35,10 @@ import com.example.activecare.screens.home.models.HomeSubState.Water
 import com.example.activecare.screens.home.models.HomeSubState.Weight
 import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.screens.home.view.AddFoodRecordView
+import com.example.activecare.screens.home.view.BloodView
 import com.example.activecare.screens.home.view.CaloriesView
 import com.example.activecare.screens.home.view.DefaultView
-import com.example.activecare.screens.home.view.PlotView
+import com.example.activecare.screens.home.view.SleepView
 import com.example.activecare.screens.home.view.WaterView
 import com.example.activecare.screens.home.view.WeightView
 import com.example.activecare.ui.components.Header
@@ -113,7 +114,13 @@ fun HomeScreen(
                                 steps = steps
                             )
 
-                            Pulse -> PlotView()
+                            Pulse -> BloodView(
+                                onDateClick = {
+                                    homeViewModel.obtainEvent(HomeEvent.LoadData(it))
+                                },
+                                whatValue = "pulse",
+                                viewState = viewState,
+                            )
                             Weight -> WeightView(
                                 viewState = this@with,
                                 limit = limit,
@@ -138,8 +145,26 @@ fun HomeScreen(
                                 }
                             )
 
-                            Sleep -> TODO()
-                            Sp02 -> TODO()
+                            Sleep -> SleepView(
+                                value = viewState.sleep,
+                                viewState = viewState,
+                                onValueChange = {
+                                    homeViewModel.obtainEvent(HomeEvent.SleepChanged(it))
+                                },
+                                onDateClick = {
+                                    homeViewModel.obtainEvent(HomeEvent.LoadData(it))
+                                },
+                                onButtonClick = {
+                                    homeViewModel.obtainEvent(HomeEvent.SleepSend)
+                                }
+                            )
+                            Sp02 ->  BloodView(
+                            onDateClick = {
+                                homeViewModel.obtainEvent(HomeEvent.LoadData(it))
+                            },
+                            whatValue = "spO2",
+                            viewState = viewState,
+                        )
                             Calories -> CaloriesView(
                                 viewState = this@with,
                                 limit = limit,

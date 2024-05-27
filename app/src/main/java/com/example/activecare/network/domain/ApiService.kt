@@ -91,6 +91,7 @@ interface ApiService {
     suspend fun getUserWorkouts(limit: Limitation): Pair<List<Workout>, Error?>
     suspend fun getUserStat(limit: Limitation): Pair<List<Stat>, Error?>
     suspend fun getUserWeight(): Pair<Float?, Error?>
+    suspend fun getUser(): Pair<User?, Error?>
 
     suspend fun getStatActivityAndMeasure(date: String): Pair<PersonStatistic, Error?>
     suspend fun getWorkoutActivityAndMeasure(date: String): Pair<WorkoutStatistic, Error?>

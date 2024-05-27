@@ -19,7 +19,7 @@ data class PersonViewState(
         ActivityWorkout(),
         MeasureWorkout()
     ),
-    val user: User? = User(),
+    val user: User? = User(gender = true),
     val isLoad: Boolean = false,
     val selectedDate: String = "",
     val limit: Limitation = Limitation(

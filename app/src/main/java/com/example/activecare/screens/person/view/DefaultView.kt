@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -15,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.TextComponent
 import com.example.activecare.screens.person.models.PersonViewState
@@ -23,6 +25,7 @@ import com.example.activecare.ui.theme.AppTheme
 @Composable
 fun DefaultView(
     viewState: PersonViewState,
+    loadData: (Limitation)->Unit,
     onStatViewClick: () -> Unit,
     onWorkoutViewClick: () -> Unit,
     onSettingClick: () -> Unit,
@@ -30,6 +33,9 @@ fun DefaultView(
 ) {
     val height = 56.dp
     val width = 328.dp
+    LaunchedEffect(Unit){
+        loadData.invoke(Limitation(""))
+    }
     Box(
         modifier = Modifier
             .padding(top = 24.dp)

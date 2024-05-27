@@ -17,6 +17,7 @@ fun SettingView(
     onProfileClick: () -> Unit,
     onNotificationClick: () -> Unit,
     onDevicesClick: () -> Unit,
+    onLogoutClick: ()->Unit
 ) {
     ButtonComponent(
         text = stringResource(id = R.string.SettingsProfile),
@@ -50,5 +51,16 @@ fun SettingView(
         textAlign = TextAlign.Start,
     ) {
         onDevicesClick.invoke()
+    }
+    ButtonComponent(
+        text = stringResource(id = R.string.LogOut),
+        modifier = Modifier
+            .padding(top = 24.dp, start = 24.dp, end = 24.dp)
+            .fillMaxWidth()
+            .height(56.dp),
+        textSize = 22.sp,
+        textAlign = TextAlign.Start,
+    ) {
+        onLogoutClick.invoke()
     }
 }

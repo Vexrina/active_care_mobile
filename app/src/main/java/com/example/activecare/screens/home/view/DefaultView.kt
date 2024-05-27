@@ -3,7 +3,6 @@ package com.example.activecare.screens.home.view
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.example.activecare.R
 import com.example.activecare.common.filterByDate
@@ -53,14 +52,7 @@ fun DefaultView(
                     foodRecords = filteredRecords,
                 ) + whatDim(it),
                 onClick = { onClickEvents[it].invoke() },
-                containerColor = if (
-                    it in listOf
-                        (
-//                        0, 2, 3,
-                        1, 4, 5
-                    )
-                )
-                    AppTheme.colors.LightBack else Color.Gray
+                containerColor = AppTheme.colors.LightBack
             )
         }
     }

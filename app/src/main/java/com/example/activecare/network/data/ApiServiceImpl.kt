@@ -32,6 +32,8 @@ import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -59,6 +61,9 @@ class ApiServiceImpl @Inject constructor(
 
     override suspend fun createUser(user: User): Pair<GetTokens?, Error?> {
         return try {
+            Log.d("apiService", user.toString())
+            val jsonBody = Json.encodeToString(user)
+            Log.d("apiService", jsonBody) // Выводим JSON в лог
             val response = client.post {
                 url(ApiRoutes.REGISTER)
                 contentType(ContentType.Application.Json)
@@ -68,6 +73,7 @@ class ApiServiceImpl @Inject constructor(
                 HttpStatusCode.OK -> Pair(response.body<GetTokens>(), null)
                 HttpStatusCode.BadRequest -> Pair(null, Error("Email is not valid"))
                 HttpStatusCode.Conflict -> Pair(null, Error("User already exist"))
+                HttpStatusCode.UnprocessableEntity -> Pair(null, Error("some info was empty"))
                 else -> Pair(null, Error("Something went wrong"))
             }
         } catch (ex: Exception) {
@@ -269,6 +275,23 @@ class ApiServiceImpl @Inject constructor(
             }
             val weight = response.body<User>().weight
             Pair(weight, null)
+        } catch (ex: Exception){
+            Pair(null, catchRequestsErrors(ex))
+        }
+    }
+
+    override suspend fun getUser(): Pair<User?, Error?> {
+        return try {
+            val tokens = cache.getUsersData()
+            if (tokens.first == "" || tokens.second == "") {
+                return Pair(null, Error("No tokens in SharedPreferences"))
+            }
+            val response = client.get{
+                header("Authorization", "Bearer ${tokens.first}")
+                url(ApiRoutes.USER)
+                contentType(ContentType.Application.Json)
+            }
+            Pair(response.body<User>(), null)
         } catch (ex: Exception){
             Pair(null, catchRequestsErrors(ex))
         }

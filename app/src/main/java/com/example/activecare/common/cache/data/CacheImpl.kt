@@ -35,19 +35,21 @@ class CacheImpl @Inject constructor(
 
     override fun getOnboardData(): OnboardData {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val data = OnboardData(
+        return OnboardData(
             gender = prefs.getBoolean(KEY_ONBOARD_GENDER, false),
             weight = prefs.getFloat(KEY_ONBOARD_WEIGHT, 0.0F),
             height = prefs.getFloat(KEY_ONBOARD_HEIGHT, 0.0F),
             birthDate = prefs.getString(KEY_ONBOARD_BIRTHD, "")
         )
-        val editor = prefs.edit()
+    }
+
+    override fun deleteOnboardData(){
+        val editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
         editor.remove(KEY_ONBOARD_GENDER)
         editor.remove(KEY_ONBOARD_WEIGHT)
         editor.remove(KEY_ONBOARD_HEIGHT)
         editor.remove(KEY_ONBOARD_BIRTHD)
         editor.apply()
-        return data
     }
 
     override fun userSignOut() {

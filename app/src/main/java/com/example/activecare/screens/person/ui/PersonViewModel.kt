@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.activecare.common.EventHandler
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.person.domain.BluetoothController
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class PersonViewModel @Inject constructor(
     private val apiService: ApiService,
     private val bluetoothController: BluetoothController,
+    private val cache: Cache,
 ) : ViewModel(), EventHandler<PersonEvent> {
     private val _viewState: MutableStateFlow<PersonViewState> = MutableStateFlow(PersonViewState())
     val viewState: StateFlow<PersonViewState> = _viewState
@@ -63,7 +65,12 @@ class PersonViewModel @Inject constructor(
             is PersonEvent.DateChanged -> dateChanged(event.value)
             is PersonEvent.LoadData -> loadData(event.value)
             is PersonEvent.BluetoothDeviceClicked -> connectToDevice(event.value)
+            PersonEvent.onLogOutClicked -> logOut()
         }
+    }
+
+    private fun logOut(){
+        cache.userSignOut()
     }
 
     private fun backSubState() {
@@ -120,10 +127,36 @@ class PersonViewModel @Inject constructor(
 
     private fun loadData(limit: Limitation) {
         Log.d("PVM", "HERE1")
-        if (_viewState.value.personSubState == PersonSubState.Stat) {
-            loadStatData(limit)
-        } else if (_viewState.value.personSubState == PersonSubState.Workouts) {
-            loadWorkoutData(limit)
+        when (_viewState.value.personSubState) {
+            PersonSubState.Stat -> {
+                loadStatData(limit)
+            }
+            PersonSubState.Workouts -> {
+                loadWorkoutData(limit)
+            }
+            PersonSubState.Default -> {
+                loadUserName()
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun loadUserName(){
+        viewModelScope.launch(Dispatchers.IO) {
+            _viewState.update {
+                it.copy(
+                    isLoad = true
+                )
+            }
+            val response = apiService.getUser()
+            if (response.second != null) Log.d("PVM", response.second!!.message!!)
+            _viewState.update {
+                it.copy(
+                    isLoad = false,
+                    user = response.first
+                )
+            }
         }
     }
 

@@ -9,10 +9,15 @@ interface Cache {
      */
     fun setOnboardData(data: OnboardData)
     /**
-     * Get onboard data in signup screen. Delete all data for save storage
+     * Get onboard data in signup screen.
      * @return OnboardData
      */
     fun getOnboardData(): OnboardData
+
+    /**
+     * Delete onboard data for save storage
+     */
+    fun deleteOnboardData()
     /**
      * Delete user's data from prefs.
      */

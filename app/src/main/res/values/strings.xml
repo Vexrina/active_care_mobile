@@ -113,4 +113,9 @@
     <string name="startWorkoutButton">Начать тренировку!</string>
     <string name="networkErrorScreen">Приложение не может установить соединение с сервером.\nПопробуйте позже :C</string>
     <string name="TrackRunText">Используйте точку или запятую для разделения часов и минут</string>
+    <string name="sleepHint">Введите длительность вашего сна в формате \"Часы.Минуты\"</string>
+    <string name="yearFilter">Год</string>
+    <string name="monthFilter">Месяц</string>
+    <string name="weekFilter">Неделя</string>
+    <string name="LogOut">Выйти из аккаунта</string>
 </resources>

@@ -9,7 +9,7 @@ import org.osmdroid.util.GeoPoint
 
 data class WorkoutViewState(
     val workoutSubState: WorkoutSubState = WorkoutSubState.Default,
-    val user: User? = User(),
+    val user: User = User(gender=true),
     val currentLocation: Location? = null,
     val locations: List<GeoPoint> = emptyList(),
     val distance: Float = 0f,

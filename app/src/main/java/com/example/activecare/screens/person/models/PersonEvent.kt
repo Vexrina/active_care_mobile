@@ -18,4 +18,6 @@ sealed class PersonEvent {
     data object BluetoothStopScanClicked : PersonEvent()
     data class DateChanged(val value: String): PersonEvent()
     data class BluetoothDeviceClicked(val value: BluetoothDeviceDomain): PersonEvent()
+
+    data object onLogOutClicked : PersonEvent()
 }

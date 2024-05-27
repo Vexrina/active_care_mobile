@@ -22,4 +22,6 @@ sealed class HomeEvent {
     data object AddWeight: HomeEvent()
     data class ChangeWater(val value: Int): HomeEvent()
     data object ErrorShown : HomeEvent()
+    data class SleepChanged(val value: String): HomeEvent()
+    data object SleepSend: HomeEvent()
 }
