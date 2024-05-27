@@ -30,11 +30,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
+import com.example.activecare.screens.signin.models.SignInViewState
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.SignInTextField
 import com.example.activecare.ui.components.TextComponent
 import com.example.activecare.ui.components.TextVisuals
-import com.example.activecare.screens.signin.models.SignInViewState
 import com.example.activecare.ui.theme.AppTheme
 
 @Composable

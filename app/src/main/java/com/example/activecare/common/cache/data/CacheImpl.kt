@@ -43,7 +43,7 @@ class CacheImpl @Inject constructor(
         )
     }
 
-    override fun deleteOnboardData(){
+    override fun deleteOnboardData() {
         val editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
         editor.remove(KEY_ONBOARD_GENDER)
         editor.remove(KEY_ONBOARD_WEIGHT)

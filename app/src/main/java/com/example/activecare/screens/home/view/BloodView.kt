@@ -8,10 +8,10 @@ import com.example.activecare.ui.components.FilterComponent
 
 @Composable
 fun BloodView(
-    onDateClick: (Limitation)->Unit,
+    onDateClick: (Limitation) -> Unit,
     whatValue: String,
     viewState: HomeViewState,
-){
+) {
     FilterComponent(
         onWeekClicked = {
             onDateClick.invoke(

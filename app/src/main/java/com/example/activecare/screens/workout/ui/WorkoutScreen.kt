@@ -18,33 +18,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.activecare.R
-import com.example.activecare.ui.components.BottomNavigationBar
-import com.example.activecare.ui.components.Header
 import com.example.activecare.navigation.NavigationTree
-import com.example.activecare.screens.home.models.HomeEvent
 import com.example.activecare.screens.workout.models.WorkoutEvent
 import com.example.activecare.screens.workout.models.WorkoutSubState
 import com.example.activecare.screens.workout.models.WorkoutViewState
 import com.example.activecare.screens.workout.views.DefaultView
 import com.example.activecare.screens.workout.views.OsmdroidMap
 import com.example.activecare.screens.workout.views.TrackView
+import com.example.activecare.ui.components.BottomNavigationBar
+import com.example.activecare.ui.components.Header
 import kotlinx.coroutines.channels.consumeEach
 
 @Composable
 fun WorkoutScreen(
     workoutViewModel: WorkoutViewModel,
     navController: NavController,
-){
+) {
     val viewState: WorkoutViewState by workoutViewModel
         .viewState
         .collectAsState()
 
     val context = LocalContext.current
-    with(viewState){
+    with(viewState) {
         Scaffold(
             topBar = {
                 Header(
-                    text = when(workoutSubState) {
+                    text = when (workoutSubState) {
                         WorkoutSubState.Default -> stringResource(id = R.string.WorkoutTitle)
                         WorkoutSubState.StreetRun -> stringResource(id = R.string.StreetRun)
                         WorkoutSubState.TrackRun -> stringResource(id = R.string.TrackRun)
@@ -53,26 +52,27 @@ fun WorkoutScreen(
                     },
                     backIcon = workoutSubState != WorkoutSubState.Default,
                     modifier = Modifier,
-                    onClick = { workoutViewModel.obtainEvent(WorkoutEvent.BackClicked)},
+                    onClick = { workoutViewModel.obtainEvent(WorkoutEvent.BackClicked) },
                     textSize = 22.sp,
                 )
             },
-            content = {paddingValues->
+            content = { paddingValues ->
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
                         .fillMaxSize()
                         .background(Color.White),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                ){
+                ) {
                     when (workoutSubState) {
                         WorkoutSubState.Default -> DefaultView(
-                            onStreetRunClick = { workoutViewModel.obtainEvent(WorkoutEvent.StreetRun)},
-                            onTrackRunClick = { workoutViewModel.obtainEvent(WorkoutEvent.TrackRun)},
-                            onWalkingClick = { workoutViewModel.obtainEvent(WorkoutEvent.Walking)},
-                            onBikeClick = { workoutViewModel.obtainEvent(WorkoutEvent.Bike)},
+                            onStreetRunClick = { workoutViewModel.obtainEvent(WorkoutEvent.StreetRun) },
+                            onTrackRunClick = { workoutViewModel.obtainEvent(WorkoutEvent.TrackRun) },
+                            onWalkingClick = { workoutViewModel.obtainEvent(WorkoutEvent.Walking) },
+                            onBikeClick = { workoutViewModel.obtainEvent(WorkoutEvent.Bike) },
                         )
-                        WorkoutSubState.TrackRun ->{
+
+                        WorkoutSubState.TrackRun -> {
                             LaunchedEffect(Unit) {
                                 val eventChannel = viewState.eventChannel
                                 eventChannel.consumeEach { event ->
@@ -82,6 +82,7 @@ fun WorkoutScreen(
                                                 context, event.Message, Toast.LENGTH_SHORT
                                             )
                                             .show()
+
                                         else -> {}
                                     }
                                 }
@@ -105,9 +106,10 @@ fun WorkoutScreen(
                                 }
                             )
                         }
+
                         else -> {
                             OsmdroidMap(
-                                viewState=this@with,
+                                viewState = this@with,
                                 drawLineEvent = {
                                     workoutViewModel.obtainEvent(WorkoutEvent.StartWorkout(it))
                                 },

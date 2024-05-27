@@ -13,9 +13,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
+import com.example.activecare.screens.signin.models.SignInViewState
 import com.example.activecare.ui.components.LinkComponent
 import com.example.activecare.ui.components.TextComponent
-import com.example.activecare.screens.signin.models.SignInViewState
 import com.example.activecare.ui.theme.AppTheme
 
 @Composable

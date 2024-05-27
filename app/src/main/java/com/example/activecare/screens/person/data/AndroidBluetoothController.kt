@@ -39,11 +39,17 @@ class AndroidBluetoothController(
         bluetoothAdapter?.bluetoothLeScanner
     }
 
-    private val _scannedDevices = MutableStateFlow<List<com.example.activecare.screens.person.domain.BluetoothDeviceWrapper>>(emptyList())
+    private val _scannedDevices =
+        MutableStateFlow<List<com.example.activecare.screens.person.domain.BluetoothDeviceWrapper>>(
+            emptyList()
+        )
     override val scannedDevices: StateFlow<List<com.example.activecare.screens.person.domain.BluetoothDeviceWrapper>>
         get() = _scannedDevices.asStateFlow()
 
-    private val _pairedDevices = MutableStateFlow<List<com.example.activecare.screens.person.domain.BluetoothDeviceWrapper>>(emptyList())
+    private val _pairedDevices =
+        MutableStateFlow<List<com.example.activecare.screens.person.domain.BluetoothDeviceWrapper>>(
+            emptyList()
+        )
     override val pairedDevices: StateFlow<List<com.example.activecare.screens.person.domain.BluetoothDeviceWrapper>>
         get() = _pairedDevices.asStateFlow()
 
@@ -164,6 +170,7 @@ class AndroidBluetoothController(
                     Log.d(TAG, "Connected to GATT server.")
                     gatt.discoverServices()
                 }
+
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     Log.d(TAG, "Disconnected from GATT server.")
                 }
@@ -183,7 +190,7 @@ class AndroidBluetoothController(
             gatt: BluetoothGatt,
             characteristic: BluetoothGattCharacteristic,
             value: ByteArray,
-            status: Int
+            status: Int,
         ) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
 
@@ -194,7 +201,10 @@ class AndroidBluetoothController(
             }
         }
 
-        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+        ) {
             // Handle characteristic changes
             val data = characteristic.value
             Log.d(TAG, "Characteristic changed: ${data.toHexString()}")

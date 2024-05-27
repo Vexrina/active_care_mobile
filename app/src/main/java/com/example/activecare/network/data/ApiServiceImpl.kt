@@ -1,9 +1,8 @@
 package com.example.activecare.network.data
 
 import android.util.Log
-import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.averageInStats
-import com.example.activecare.common.filterWorkoutsByWorkoutTypeAndCalculateSum
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.dataclasses.ActivityStat
 import com.example.activecare.common.dataclasses.ActivityWorkout
 import com.example.activecare.common.dataclasses.FoodRecord
@@ -18,6 +17,7 @@ import com.example.activecare.common.dataclasses.User
 import com.example.activecare.common.dataclasses.WatchStat
 import com.example.activecare.common.dataclasses.Workout
 import com.example.activecare.common.dataclasses.WorkoutStatistic
+import com.example.activecare.common.filterWorkoutsByWorkoutTypeAndCalculateSum
 import com.example.activecare.network.domain.ApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -94,7 +94,10 @@ class ApiServiceImpl @Inject constructor(
                 contentType(ContentType.Application.Json)
             }
             val newTokens = response.body<GetTokens>()
-            cache.userSignIn(newTokens.access_token.access_token, newTokens.refresh_token.access_token)
+            cache.userSignIn(
+                newTokens.access_token.access_token,
+                newTokens.refresh_token.access_token
+            )
             null
         } catch (ex: Exception) {
             catchRequestsErrors(ex)
@@ -268,14 +271,14 @@ class ApiServiceImpl @Inject constructor(
             if (tokens.first == "" || tokens.second == "") {
                 return Pair(null, Error("No tokens in SharedPreferences"))
             }
-            val response = client.get{
+            val response = client.get {
                 header("Authorization", "Bearer ${tokens.first}")
                 url(ApiRoutes.USER)
                 contentType(ContentType.Application.Json)
             }
             val weight = response.body<User>().weight
             Pair(weight, null)
-        } catch (ex: Exception){
+        } catch (ex: Exception) {
             Pair(null, catchRequestsErrors(ex))
         }
     }
@@ -286,18 +289,18 @@ class ApiServiceImpl @Inject constructor(
             if (tokens.first == "" || tokens.second == "") {
                 return Pair(null, Error("No tokens in SharedPreferences"))
             }
-            val response = client.get{
+            val response = client.get {
                 header("Authorization", "Bearer ${tokens.first}")
                 url(ApiRoutes.USER)
                 contentType(ContentType.Application.Json)
             }
             Pair(response.body<User>(), null)
-        } catch (ex: Exception){
+        } catch (ex: Exception) {
             Pair(null, catchRequestsErrors(ex))
         }
     }
 
-    override suspend fun getStatActivityAndMeasure(date: String): Pair<PersonStatistic, Error?>{
+    override suspend fun getStatActivityAndMeasure(date: String): Pair<PersonStatistic, Error?> {
         val nullableStat = PersonStatistic(
             activity = ActivityStat(),
             measure = MeasureStat()
@@ -312,15 +315,15 @@ class ApiServiceImpl @Inject constructor(
                 date_offset = 1
             )
             val response1 = getUserStat(limit)
-            if (response1.second != null){
+            if (response1.second != null) {
                 return Pair(nullableStat, response1.second)
             }
             val response2 = getUserFoodRecords(limit)
-            if (response2.second != null){
+            if (response2.second != null) {
                 return Pair(nullableStat, response2.second)
             }
             val response3 = getUserWorkouts(limit)
-            if (response3.second != null){
+            if (response3.second != null) {
                 return Pair(nullableStat, response3.second)
             }
             val activityStat = ActivityStat(
@@ -348,8 +351,9 @@ class ApiServiceImpl @Inject constructor(
                 PersonStatistic(
                     activityStat,
                     measureStat
-                ), null)
-        } catch (ex: Exception){
+                ), null
+            )
+        } catch (ex: Exception) {
             return Pair(
                 nullableStat,
                 catchRequestsErrors(ex)
@@ -357,7 +361,7 @@ class ApiServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun getWorkoutActivityAndMeasure(date: String): Pair<WorkoutStatistic, Error?>{
+    override suspend fun getWorkoutActivityAndMeasure(date: String): Pair<WorkoutStatistic, Error?> {
         val nullableStat = WorkoutStatistic(
             activity = ActivityWorkout(),
             measure = MeasureWorkout()
@@ -372,12 +376,12 @@ class ApiServiceImpl @Inject constructor(
                 date_offset = 1,
             )
             val response1 = getUserStat(limit)
-            if (response1.second != null){
+            if (response1.second != null) {
                 return Pair(nullableStat, response1.second)
             }
 
             val response2 = getUserWorkouts(limit)
-            if (response2.second != null){
+            if (response2.second != null) {
                 return Pair(nullableStat, response2.second)
             }
 
@@ -400,8 +404,9 @@ class ApiServiceImpl @Inject constructor(
                 WorkoutStatistic(
                     activityWorkout,
                     measureWorkout
-                ), null)
-        } catch (ex: Exception){
+                ), null
+            )
+        } catch (ex: Exception) {
             return Pair(
                 nullableStat,
                 catchRequestsErrors(ex)
@@ -417,8 +422,8 @@ class ApiServiceImpl @Inject constructor(
      * @return The URL where you can go with a JWT token and get the necessary data
      * in the required range.
      */
-    private fun createGetUrl(limit: Limitation, url: String): String{
-        return url+"?date=${limit.date}&offset=${limit.date_offset}&deltatype=${limit.deltatype}"
+    private fun createGetUrl(limit: Limitation, url: String): String {
+        return url + "?date=${limit.date}&offset=${limit.date_offset}&deltatype=${limit.deltatype}"
     }
 
     /**

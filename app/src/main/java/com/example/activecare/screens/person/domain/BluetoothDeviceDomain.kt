@@ -7,5 +7,5 @@ typealias BluetoothDeviceDomain = BluetoothDeviceWrapper
 data class BluetoothDeviceWrapper(
     val name: String?,
     val address: String,
-    val device: BluetoothDevice
+    val device: BluetoothDevice,
 )

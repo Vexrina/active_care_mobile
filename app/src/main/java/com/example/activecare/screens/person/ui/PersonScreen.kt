@@ -17,8 +17,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.activecare.R
 import com.example.activecare.common.simpleStringParser
-import com.example.activecare.ui.components.BottomNavigationBar
-import com.example.activecare.ui.components.Header
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.screens.person.models.BluetoothViewState
 import com.example.activecare.screens.person.models.PersonEvent
@@ -31,6 +29,8 @@ import com.example.activecare.screens.person.view.ProfileSettings
 import com.example.activecare.screens.person.view.SettingView
 import com.example.activecare.screens.person.view.StatView
 import com.example.activecare.screens.person.view.WorkoutView
+import com.example.activecare.ui.components.BottomNavigationBar
+import com.example.activecare.ui.components.Header
 import java.util.Calendar
 
 @Composable
@@ -100,7 +100,7 @@ fun PersonScreen(
                                     PersonEvent.DateChanged(it)
                                 )
                             },
-                            onDataLoad ={
+                            onDataLoad = {
                                 personViewModel.obtainEvent(
                                     PersonEvent.LoadData(it)
                                 )
@@ -116,7 +116,7 @@ fun PersonScreen(
                                     PersonEvent.DateChanged(it)
                                 )
                             },
-                            onDataLoad ={
+                            onDataLoad = {
                                 personViewModel.obtainEvent(
                                     PersonEvent.LoadData(it)
                                 )
@@ -166,7 +166,7 @@ fun PersonScreen(
                     runClick = {
                         Log.d("BottomBar", "try to workout")
                         navController.navigate(NavigationTree.Workout.name)
-                               },
+                    },
                     homeClick = { navController.navigate(NavigationTree.Home.name) },
                     personClick = {},
                     activeIndex = 3

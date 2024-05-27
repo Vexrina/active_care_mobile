@@ -16,13 +16,13 @@ import com.example.activecare.ui.theme.AppTheme
 
 @Composable
 fun FoodRecordComponent(
-    title:String,
+    title: String,
     records: List<FoodRecord> = emptyList(),
-    onAddFoodRecord: ()->Unit = {},
-){
+    onAddFoodRecord: () -> Unit = {},
+) {
     Column(
-        modifier= Modifier
-            .padding(start = 24.dp, end = 24.dp,top=20.dp)
+        modifier = Modifier
+            .padding(start = 24.dp, end = 24.dp, top = 20.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -33,10 +33,10 @@ fun FoodRecordComponent(
             textAlign = TextAlign.Start,
             textColor = AppTheme.colors.LightText
         )
-        records.forEach{
+        records.forEach {
             BoxedText(
                 modifier = Modifier
-                    .padding(top=6.dp)
+                    .padding(top = 6.dp)
                     .fillMaxWidth()
                     .height(44.dp),
                 textModifier = Modifier,
@@ -46,9 +46,9 @@ fun FoodRecordComponent(
         }
         CircleButton(
             modifier = Modifier
-                .padding(top=6.dp)
+                .padding(top = 6.dp)
                 .height(50.dp),
-            onClick = {onAddFoodRecord.invoke()},
+            onClick = { onAddFoodRecord.invoke() },
             plus = true,
             color = Color.Transparent,
         )

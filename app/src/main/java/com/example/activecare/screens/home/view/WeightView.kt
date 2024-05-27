@@ -25,16 +25,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
 import com.example.activecare.common.calculateEndDate
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.common.earlyThanDate
 import com.example.activecare.common.filterByDate
 import com.example.activecare.common.simpleDateTimeParser
+import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.ChooseDateComponent
 import com.example.activecare.ui.components.TextComponent
 import com.example.activecare.ui.components.TextFieldComponent
 import com.example.activecare.ui.components.WeightChangesComponent
-import com.example.activecare.common.dataclasses.Limitation
-import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.theme.AppTheme
 import java.util.Calendar
 
@@ -43,12 +43,12 @@ fun WeightView(
     viewState: HomeViewState,
     date: Calendar,
     limit: Limitation,
-    onDataLoad: (Limitation)->Unit,
-    onChangeDate: (String)->Unit,
+    onDataLoad: (Limitation) -> Unit,
+    onChangeDate: (String) -> Unit,
     value: String?,
-    onValueChange: (String)->Unit,
-    onSendData: ()->Unit,
-){
+    onValueChange: (String) -> Unit,
+    onSendData: () -> Unit,
+) {
     val focusManager = LocalFocusManager.current
     var currentDate by remember { mutableStateOf(date) }
 
@@ -62,10 +62,10 @@ fun WeightView(
     var stats by remember {
         mutableStateOf(filterByDate(viewState.stats, currentDate))
     }
-    LaunchedEffect(currentDateString){
+    LaunchedEffect(currentDateString) {
         onChangeDate.invoke(currentDateString)
         Log.d("WVLE", currentDateString)
-        if (currentDateString.substring(0,10) == calculateEndDate(limit).substring(0,10)){
+        if (currentDateString.substring(0, 10) == calculateEndDate(limit).substring(0, 10)) {
             Log.d("WVLE", "ALARM")
             val newLimit = Limitation(date = currentDateString)
             endDate = calculateEndDate(newLimit)
@@ -95,19 +95,19 @@ fun WeightView(
         }
     )
     Log.d("WV", "${stats.size}")
-    if (stats.size>1){
+    if (stats.size > 1) {
         WeightChangesComponent(
             lastWeight = stats[0].weight,
             preLastWeight = stats[1].weight
         )
     } else {
         val newStats = earlyThanDate(viewState.stats, currentDate)
-        if (newStats.size>1){
+        if (newStats.size > 1) {
             WeightChangesComponent(
                 lastWeight = newStats[0].weight,
                 preLastWeight = newStats[1].weight
             )
-        } else if (newStats.size==1){
+        } else if (newStats.size == 1) {
             WeightChangesComponent(
                 lastWeight = newStats[0].weight,
                 preLastWeight = newStats[0].weight

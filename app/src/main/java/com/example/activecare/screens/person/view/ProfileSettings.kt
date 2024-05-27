@@ -9,8 +9,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
-import com.example.activecare.ui.components.BoxedText
 import com.example.activecare.screens.person.models.PersonViewState
+import com.example.activecare.ui.components.BoxedText
 
 @Composable
 fun ProfileSettings(

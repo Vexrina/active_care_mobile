@@ -14,11 +14,11 @@ data class HomeViewState(
     val foodRecord: List<FoodRecord> = emptyList(),
     val isLoad: Boolean = true,
     val newWeight: String = "",
-    val selectedDate: String ="",
+    val selectedDate: String = "",
     val limit: Limitation = Limitation(
         LocalDateTime.now().format(DateTimeParser)
     ),
 
     val eventChannel: Channel<EventTuple> = Channel(Channel.BUFFERED),
-    val sleep: String = ""
+    val sleep: String = "",
 )

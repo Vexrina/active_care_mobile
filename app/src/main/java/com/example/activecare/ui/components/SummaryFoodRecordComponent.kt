@@ -22,7 +22,9 @@ fun SummaryFoodRecordComponent(
 ) {
     TextComponent(
         text = stringResource(id = R.string.Total),
-        modifier = Modifier.fillMaxWidth().padding(top=12.dp, start =24.dp, bottom = 12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp, start = 24.dp, bottom = 12.dp),
         textSize = 22.sp,
         textAlign = TextAlign.Start,
         textColor = AppTheme.colors.LightText

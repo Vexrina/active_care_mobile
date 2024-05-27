@@ -11,14 +11,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.activecare.common.EventHandler
 import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.dataclasses.EventTuple
-import com.example.activecare.common.filterByDate
-import com.example.activecare.common.simpleStringParser
 import com.example.activecare.common.dataclasses.FoodRecord
 import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.common.dataclasses.Stat
+import com.example.activecare.common.filterByDate
 import com.example.activecare.common.getCurrentDate
 import com.example.activecare.common.getPrevDate
 import com.example.activecare.common.simpleDateTimeParser
+import com.example.activecare.common.simpleStringParser
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.home.models.AddCaloriesState
 import com.example.activecare.screens.home.models.HomeEvent
@@ -165,7 +165,7 @@ class HomeViewModel @AssistedInject constructor(
                         date_stamp = _viewState.value.selectedDate,
                     )
                     val result = apiService.appendUserData(foodRecord)
-                    if (result.second!=null){
+                    if (result.second != null) {
                         sendErrorEvent(result.second!!.message)
                         return@launch
                     }
@@ -194,9 +194,11 @@ class HomeViewModel @AssistedInject constructor(
             ) {
                 throw NullPointerException("Some fields is empty")
             }
+
             HomeSubState.Weight -> if (_viewState.value.newWeight == "") {
                 throw NullPointerException("Some fields is empty")
             }
+
             else -> return
         }
     }
@@ -281,7 +283,7 @@ class HomeViewModel @AssistedInject constructor(
         }
     }
 
-    private fun sleepChanged(value: String){
+    private fun sleepChanged(value: String) {
         _viewState.update {
             it.copy(
                 sleep = value.replace('.', ':')
@@ -289,14 +291,14 @@ class HomeViewModel @AssistedInject constructor(
         }
     }
 
-    private fun sendSleep(){
+    private fun sendSleep() {
         val sleepValue = _viewState.value.sleep
-        if (!isValidTime(sleepValue)){
+        if (!isValidTime(sleepValue)) {
             sendErrorEvent("Not valid time")
             return
         }
         viewModelScope.launch(Dispatchers.IO) {
-            val selectedDate =  simpleDateTimeParser(Calendar.getInstance())
+            val selectedDate = simpleDateTimeParser(Calendar.getInstance())
             _viewState.update {
                 it.copy(
                     isLoad = true,
@@ -304,30 +306,32 @@ class HomeViewModel @AssistedInject constructor(
                 )
             }
             val oldStats = if (_viewState.value.stats.isNotEmpty()) _viewState.value.stats[0]
-            else Stat("", 0f,0,0f,0,0f,0)
+            else Stat("", 0f, 0, 0f, 0, 0f, 0)
             val sleepInt = (sleepValue.replace(':', '.').toFloat() * 100).toInt()
             val (_, error) = apiService.appendUserData(
                 Stat(
-                    sleep=sleepInt,
+                    sleep = sleepInt,
                     date_stamp = selectedDate,
                     pulse = oldStats.pulse,
                     steps = _stepCount.value,
                     oxygen_blood = oldStats.pulse,
-                    weight =oldStats.weight,
+                    weight = oldStats.weight,
                     water = oldStats.water,
                 )
             )
-            if (error != null){
+            if (error != null) {
                 sendErrorEvent(error.message)
                 return@launch
             }
             loadData(Limitation(_viewState.value.selectedDate, deltatype = "week", date_offset = 1))
         }
     }
+
     private fun isValidTime(time: String): Boolean {
         val timeRegex = Regex("^[0-2]{0,1}[0-9]{1}:[0-5]{1}[0-9]{1}\$")
         return timeRegex.matches(time)
     }
+
     private fun sendNewWeight() {
         viewModelScope.launch(Dispatchers.IO) {
             _viewState.update {
@@ -341,9 +345,9 @@ class HomeViewModel @AssistedInject constructor(
                 currentDate = simpleStringParser(_viewState.value.selectedDate)
             )
             try {
-                val steps = if (_viewState.value.selectedDate.startsWith(getCurrentDate())){
+                val steps = if (_viewState.value.selectedDate.startsWith(getCurrentDate())) {
                     _stepCount.value
-                } else if(filteredStats.isEmpty())
+                } else if (filteredStats.isEmpty())
                     _viewState.value.stats[0].steps
                 else 0
                 val newStat = if (filteredStats.isEmpty()) {
@@ -368,7 +372,7 @@ class HomeViewModel @AssistedInject constructor(
                     )
                 }
                 val result = apiService.appendUserData(newStat)
-                if (result.second!=null){
+                if (result.second != null) {
                     sendErrorEvent(result.second!!.message)
                     return@launch
                 }
@@ -393,9 +397,9 @@ class HomeViewModel @AssistedInject constructor(
                 currentDate = simpleStringParser(_viewState.value.selectedDate)
             )
             try {
-                val steps = if (_viewState.value.selectedDate.startsWith(getCurrentDate())){
+                val steps = if (_viewState.value.selectedDate.startsWith(getCurrentDate())) {
                     _stepCount.value
-                } else if(filteredStats.isEmpty())
+                } else if (filteredStats.isEmpty())
                     _viewState.value.stats[0].steps
                 else 0
                 val newStat = if (filteredStats.isEmpty()) {
@@ -420,7 +424,7 @@ class HomeViewModel @AssistedInject constructor(
                     )
                 }
                 val result = apiService.appendUserData(newStat)
-                if (result.second!=null){
+                if (result.second != null) {
                     sendErrorEvent(result.second!!.message)
                     return@launch
                 }
@@ -444,9 +448,9 @@ class HomeViewModel @AssistedInject constructor(
     private val _totalSteps = MutableStateFlow(cache.getTotalSteps())
     private val lastUpdateCache = cache.getLastUpdate()
 
-    private val badUpdate = (lastUpdateCache==null)||(lastUpdateCache==getPrevDate())
+    private val badUpdate = (lastUpdateCache == null) || (lastUpdateCache == getPrevDate())
 
-    private val todaySteps = if(lastUpdateCache==getCurrentDate()) cache.getTodaySteps() else 0
+    private val todaySteps = if (lastUpdateCache == getCurrentDate()) cache.getTodaySteps() else 0
     private val _stepCount = MutableStateFlow(todaySteps)
     val stepCount: StateFlow<Int> = _stepCount
 
@@ -458,7 +462,7 @@ class HomeViewModel @AssistedInject constructor(
 
     override fun onSensorChanged(event: SensorEvent) {
         if (event.sensor.type == Sensor.TYPE_STEP_COUNTER) {
-            if(badUpdate || _totalSteps.value==0){
+            if (badUpdate || _totalSteps.value == 0) {
                 _totalSteps.value = event.values[0].toInt()
                 cache.setTotalSteps(_totalSteps.value, getCurrentDate())
             }

@@ -25,5 +25,5 @@ data class PersonViewState(
     val limit: Limitation = Limitation(
         LocalDateTime.now().format(EndDateParser),
         0
-    )
+    ),
 )

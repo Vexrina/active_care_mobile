@@ -8,6 +8,7 @@ interface Cache {
      * @param data Data for transfer
      */
     fun setOnboardData(data: OnboardData)
+
     /**
      * Get onboard data in signup screen.
      * @return OnboardData
@@ -18,16 +19,19 @@ interface Cache {
      * Delete onboard data for save storage
      */
     fun deleteOnboardData()
+
     /**
      * Delete user's data from prefs.
      */
     fun userSignOut()
+
     /**
      * Put user access and refresh tokens to SharedPreferences
      * @param access user's access token
      * @param refresh user's refresh token
      */
     fun userSignIn(access: String, refresh: String)
+
     /**
      * Get users data from SharedPreferences
      * @return Pair(access, refresh) access and refresh tokens. Access token can be expired.

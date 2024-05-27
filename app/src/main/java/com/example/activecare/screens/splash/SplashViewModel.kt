@@ -14,8 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private  val apiService: ApiService,
-    private  val cache: Cache,
+    private val apiService: ApiService,
+    private val cache: Cache,
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -27,7 +27,7 @@ class SplashViewModel @Inject constructor(
     init {
         _isLoading.value = true
         viewModelScope.launch {
-            if (!checkTokens()){
+            if (!checkTokens()) {
                 _nextScreen.value = NavigationTree.Onboard.name
                 _isLoading.value = false
                 return@launch
@@ -37,18 +37,18 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    private fun checkTokens() : Boolean {
+    private fun checkTokens(): Boolean {
         Log.d("SVM", "checking tokens")
         val tokens = cache.getUsersData()
-        return !(tokens.first==null || tokens.second == null)
+        return !(tokens.first == null || tokens.second == null)
     }
 
     private suspend fun checkConnection() {
         val err = apiService.updateToken()
-        if (err==null) {
+        if (err == null) {
             _nextScreen.value = NavigationTree.Home.name
         } else {
-            _nextScreen.value = when (err){
+            _nextScreen.value = when (err) {
                 Error("Internal Server Error") -> NavigationTree.NetworkError.name
                 else -> NavigationTree.Onboard.name
             }

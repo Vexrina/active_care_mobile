@@ -15,29 +15,31 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.activecare.R
+import com.example.activecare.screens.home.models.AddCaloriesState
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.TextFieldComponent
-import com.example.activecare.screens.home.models.AddCaloriesState
 
 @Composable
 fun AddFoodRecordView(
     caloriesState: AddCaloriesState,
-    onFoodNameChanged: (String)->Unit,
-    onCaloriesChanged: (String)->Unit,
-    onProteinsChanged: (String)->Unit,
-    onFatsChanged: (String)->Unit,
-    onCarbohydratesChanged: (String)->Unit,
-    onAddFoodRecordClicked: (String)->Unit,
+    onFoodNameChanged: (String) -> Unit,
+    onCaloriesChanged: (String) -> Unit,
+    onProteinsChanged: (String) -> Unit,
+    onFatsChanged: (String) -> Unit,
+    onCarbohydratesChanged: (String) -> Unit,
+    onAddFoodRecordClicked: (String) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
-            .padding(start=20.dp, end=20.dp,top=20.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
     ) {
         TextFieldComponent(
-            modifier = Modifier.padding(top=20.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth(),
             value = caloriesState.foodName,
-            onValueChange = {onFoodNameChanged.invoke(it)},
+            onValueChange = { onFoodNameChanged.invoke(it) },
             label = stringResource(id = R.string.addCaloriesFoodName),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
@@ -48,9 +50,11 @@ fun AddFoodRecordView(
             )
         )
         TextFieldComponent(
-            modifier = Modifier.padding(top=20.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth(),
             value = caloriesState.calories,
-            onValueChange = {onCaloriesChanged.invoke(it)},
+            onValueChange = { onCaloriesChanged.invoke(it) },
             label = stringResource(id = R.string.addCaloriesCalories),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
@@ -61,9 +65,11 @@ fun AddFoodRecordView(
             )
         )
         TextFieldComponent(
-            modifier = Modifier.padding(top=20.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth(),
             value = caloriesState.proteins,
-            onValueChange = {onProteinsChanged.invoke(it)},
+            onValueChange = { onProteinsChanged.invoke(it) },
             label = stringResource(id = R.string.addCaloriesProteins),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
@@ -74,9 +80,11 @@ fun AddFoodRecordView(
             )
         )
         TextFieldComponent(
-            modifier = Modifier.padding(top=20.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth(),
             value = caloriesState.fats,
-            onValueChange = {onFatsChanged.invoke(it)},
+            onValueChange = { onFatsChanged.invoke(it) },
             label = stringResource(id = R.string.addCaloriesFats),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
@@ -87,9 +95,11 @@ fun AddFoodRecordView(
             )
         )
         TextFieldComponent(
-            modifier = Modifier.padding(top=20.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth(),
             value = caloriesState.carbohydrates,
-            onValueChange = {onCarbohydratesChanged.invoke(it)},
+            onValueChange = { onCarbohydratesChanged.invoke(it) },
             label = stringResource(id = R.string.addCaloriesCarbohydrates),
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
@@ -101,7 +111,7 @@ fun AddFoodRecordView(
         )
         ButtonComponent(
             modifier = Modifier
-                .padding(top=20.dp)
+                .padding(top = 20.dp)
                 .fillMaxWidth()
                 .height(60.dp),
             text = stringResource(id = R.string.addCaloriesButton),

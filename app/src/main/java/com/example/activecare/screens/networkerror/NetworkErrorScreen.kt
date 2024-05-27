@@ -18,7 +18,7 @@ import com.example.activecare.ui.components.TextComponent
 import com.example.activecare.ui.theme.AppTheme
 
 @Composable
-fun NetworkErrorScreen(){
+fun NetworkErrorScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -37,6 +37,6 @@ fun NetworkErrorScreen(){
 
 @Preview
 @Composable
-fun ShowNetworkErrorScreen(){
+fun ShowNetworkErrorScreen() {
     NetworkErrorScreen()
 }

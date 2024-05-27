@@ -22,8 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.activecare.R
-import com.example.activecare.ui.components.Header
-import com.example.activecare.ui.components.LinkComponent
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.screens.signin.models.SignInEvent
 import com.example.activecare.screens.signin.models.SignInSubState
@@ -33,6 +31,8 @@ import com.example.activecare.screens.signin.view.ForgotStartView
 import com.example.activecare.screens.signin.view.SignInView
 import com.example.activecare.screens.signin.view.SignUpEndView
 import com.example.activecare.screens.signin.view.SignUpStartView
+import com.example.activecare.ui.components.Header
+import com.example.activecare.ui.components.LinkComponent
 import kotlinx.coroutines.channels.consumeEach
 
 @Composable

@@ -18,12 +18,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.common.simpleDateTimeParser
+import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.components.BoxedText
 import com.example.activecare.ui.components.ChooseDateComponent
 import com.example.activecare.ui.components.TextComponent
-import com.example.activecare.common.dataclasses.Limitation
-import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.theme.AppTheme
 import java.util.Calendar
 
@@ -115,7 +115,7 @@ fun StatView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.StatActivityDistance),
-            value = "${String.format("%.2f", stats.first.distance/1000)} км"
+            value = "${String.format("%.2f", stats.first.distance / 1000)} км"
         )
         BoxedText(
             modifier = Modifier

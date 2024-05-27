@@ -15,18 +15,18 @@ import com.example.activecare.ui.theme.AppTheme
 
 @Composable
 fun FilterComponent(
-    onYearClicked: ()->Unit = {},
-    onMonthClicked: ()->Unit = {},
-    onWeekClicked: ()->Unit = {},
-){
+    onYearClicked: () -> Unit = {},
+    onMonthClicked: () -> Unit = {},
+    onWeekClicked: () -> Unit = {},
+) {
     val textSize = 22.sp
     val textColor = AppTheme.colors.LightText
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start=24.dp, end = 24.dp, top = 24.dp),
+            .padding(start = 24.dp, end = 24.dp, top = 24.dp),
         horizontalArrangement = Arrangement.SpaceAround
-    ){
+    ) {
         TextComponent(
             text = stringResource(id = R.string.yearFilter),
             modifier = Modifier

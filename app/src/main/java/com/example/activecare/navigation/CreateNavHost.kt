@@ -75,9 +75,9 @@ fun CreateNavHost(
         composable(NavigationTree.Home.name) {
             val context = LocalContext.current
             val homeViewModel = hiltViewModel<HomeViewModel, HomeViewModel.HomeViewModelFactory>(
-                creationCallback = {homeViewModelFactory ->
+                creationCallback = { homeViewModelFactory ->
                     homeViewModelFactory.create(
-                        context=context,
+                        context = context,
                         apiService = apiService,
                         cache = cache,
                     )
@@ -88,14 +88,14 @@ fun CreateNavHost(
                 navController = navController
             )
         }
-        composable(NavigationTree.Workout.name){
+        composable(NavigationTree.Workout.name) {
             val workoutViewModel = hiltViewModel<WorkoutViewModel>()
             WorkoutScreen(
                 workoutViewModel = workoutViewModel,
                 navController = navController
             )
         }
-        composable(NavigationTree.NetworkError.name){
+        composable(NavigationTree.NetworkError.name) {
             NetworkErrorScreen()
         }
     }

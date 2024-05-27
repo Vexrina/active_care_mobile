@@ -3,11 +3,11 @@ package com.example.activecare.screens.signin.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.CacheProvider
 import com.example.activecare.common.EventHandler
-import com.example.activecare.common.dataclasses.LoginJson
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.dataclasses.EventTuple
+import com.example.activecare.common.dataclasses.LoginJson
 import com.example.activecare.common.dataclasses.User
 import com.example.activecare.network.domain.ApiService
 import com.example.activecare.screens.signin.models.SignInEvent
@@ -257,7 +257,7 @@ class LoginViewModel @AssistedInject constructor(
                     sendErrorEvent(result.second!!.message)
                     return@launch
                 }
-                if (result.first == null){
+                if (result.first == null) {
                     sendErrorEvent("Something goes wrong")
                     return@launch
                 }

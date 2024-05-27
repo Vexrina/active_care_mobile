@@ -22,25 +22,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
 import com.example.activecare.common.calculateEndDate
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.common.filterByDate
 import com.example.activecare.common.simpleDateTimeParser
+import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.ChooseDateComponent
 import com.example.activecare.ui.components.TextComponent
-import com.example.activecare.common.dataclasses.Limitation
-import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.theme.AppTheme
 import java.util.Calendar
 
 @Composable
 fun WaterView(
     viewState: HomeViewState,
-    onChangeWater: (Int)->Unit,
+    onChangeWater: (Int) -> Unit,
     date: Calendar,
     limit: Limitation,
-    onDataLoad: (Limitation)->Unit,
-    onChangeDate: (String)->Unit,
-){
+    onDataLoad: (Limitation) -> Unit,
+    onChangeDate: (String) -> Unit,
+) {
     var currentDate by remember { mutableStateOf(date) }
 
     var currentDateString by remember {
@@ -53,10 +53,10 @@ fun WaterView(
     var stats by remember {
         mutableStateOf(filterByDate(viewState.stats, currentDate))
     }
-    LaunchedEffect(currentDateString){
+    LaunchedEffect(currentDateString) {
         onChangeDate.invoke(currentDateString)
         Log.d("WVLE", currentDateString)
-        if (currentDateString.substring(0,10) == calculateEndDate(limit).substring(0,10)){
+        if (currentDateString.substring(0, 10) == calculateEndDate(limit).substring(0, 10)) {
             Log.d("WVLE", "ALARM")
             val newLimit =
                 Limitation(date = currentDateString)
@@ -83,14 +83,14 @@ fun WaterView(
     )
     LazyVerticalGrid(
         columns = GridCells.Fixed(4),
-        modifier = Modifier.padding(top=48.dp)
-    ){
-        items(8){idx->
+        modifier = Modifier.padding(top = 48.dp)
+    ) {
+        items(8) { idx ->
             Icon(
-                painter = if (idx<stats[0].water)
+                painter = if (idx < stats[0].water)
                     painterResource(id = R.drawable.water_filled)
                 else painterResource(id = R.drawable.water_outlined),
-                contentDescription = if (idx<stats[0].water)
+                contentDescription = if (idx < stats[0].water)
                     idx.toString() + stringResource(id = R.string.water_filled)
                 else idx.toString() + stringResource(id = R.string.water_outlined),
                 tint = AppTheme.colors.LightText,
@@ -112,7 +112,7 @@ fun WaterView(
             .fillMaxWidth()
             .height(60.dp)
     ) {
-        if (stats[0].water<8) onChangeWater.invoke(1)
+        if (stats[0].water < 8) onChangeWater.invoke(1)
     }
     ButtonComponent(
         text = "Стакан не выпит",
@@ -121,6 +121,6 @@ fun WaterView(
             .fillMaxWidth()
             .height(60.dp)
     ) {
-        if (stats[0].water<8) onChangeWater.invoke(-1)
+        if (stats[0].water < 8) onChangeWater.invoke(-1)
     }
 }

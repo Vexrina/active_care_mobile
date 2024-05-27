@@ -51,11 +51,11 @@ fun averageInStats(
     var sumSpO2 = 0f
     var sizeSpO2 = 0
     stats.forEach {
-        if(it.pulse!=0f){
+        if (it.pulse != 0f) {
             sumPulse += it.pulse
             sizePulse++
         }
-        if(it.oxygen_blood!=0f){
+        if (it.oxygen_blood != 0f) {
             sumSpO2 += it.oxygen_blood
             sizeSpO2++
         }

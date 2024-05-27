@@ -17,10 +17,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.activecare.R
+import com.example.activecare.screens.workout.models.WorkoutViewState
 import com.example.activecare.ui.components.BoxedText
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.CircleButton
-import com.example.activecare.screens.workout.models.WorkoutViewState
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.ScaleBarOverlay
@@ -29,12 +29,12 @@ import org.osmdroid.views.overlay.ScaleBarOverlay
 fun OsmdroidMap(
     drawLineEvent: (MapView) -> Unit,
     viewState: WorkoutViewState,
-    onPauseClicked: ()->Unit,
-    onContinueClicked: (MapView)->Unit,
-    workoutStarted: ()->Unit,
-    onSendDataClicked: ()->Unit,
+    onPauseClicked: () -> Unit,
+    onContinueClicked: (MapView) -> Unit,
+    workoutStarted: () -> Unit,
+    onSendDataClicked: () -> Unit,
 ) {
-    var mapViewValue: MapView? =null
+    var mapViewValue: MapView? = null
     if (viewState.currentLocation == null) {
         CircularProgressIndicator()
     } else {

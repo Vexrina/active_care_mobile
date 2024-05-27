@@ -69,7 +69,7 @@ class PersonViewModel @Inject constructor(
         }
     }
 
-    private fun logOut(){
+    private fun logOut() {
         cache.userSignOut()
     }
 
@@ -131,9 +131,11 @@ class PersonViewModel @Inject constructor(
             PersonSubState.Stat -> {
                 loadStatData(limit)
             }
+
             PersonSubState.Workouts -> {
                 loadWorkoutData(limit)
             }
+
             PersonSubState.Default -> {
                 loadUserName()
             }
@@ -142,7 +144,7 @@ class PersonViewModel @Inject constructor(
         }
     }
 
-    private fun loadUserName(){
+    private fun loadUserName() {
         viewModelScope.launch(Dispatchers.IO) {
             _viewState.update {
                 it.copy(

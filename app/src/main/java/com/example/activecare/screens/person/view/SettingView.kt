@@ -17,7 +17,7 @@ fun SettingView(
     onProfileClick: () -> Unit,
     onNotificationClick: () -> Unit,
     onDevicesClick: () -> Unit,
-    onLogoutClick: ()->Unit
+    onLogoutClick: () -> Unit,
 ) {
     ButtonComponent(
         text = stringResource(id = R.string.SettingsProfile),

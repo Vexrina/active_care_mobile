@@ -36,7 +36,7 @@ fun DateView(onDateChanged: (String) -> Unit) {
             Instant.ofEpochMilli(it).atOffset(ZoneOffset.UTC)
         }
         val selectedDateString = selectedDate?.format(DateTimeParser).toString()
-        Log.d("MapView",selectedDateString)
+        Log.d("MapView", selectedDateString)
         onDateChanged(selectedDateString)
     }
 

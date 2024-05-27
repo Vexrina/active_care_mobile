@@ -5,13 +5,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.activecare.R
-import com.example.activecare.common.filterByDate
-import com.example.activecare.common.filterFRByDate
-import com.example.activecare.ui.components.CardComponent
-import com.example.activecare.ui.components.StepsComponent
 import com.example.activecare.common.dataclasses.FoodRecord
 import com.example.activecare.common.dataclasses.Stat
+import com.example.activecare.common.filterByDate
+import com.example.activecare.common.filterFRByDate
 import com.example.activecare.screens.home.models.HomeViewState
+import com.example.activecare.ui.components.CardComponent
+import com.example.activecare.ui.components.StepsComponent
 import com.example.activecare.ui.theme.AppTheme
 
 @Composable

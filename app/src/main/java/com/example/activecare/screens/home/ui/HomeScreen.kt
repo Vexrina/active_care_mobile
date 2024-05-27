@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.activecare.R
 import com.example.activecare.common.simpleStringParser
-import com.example.activecare.ui.components.BottomNavigationBar
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.screens.home.models.AddCaloriesState
 import com.example.activecare.screens.home.models.HomeEvent
@@ -41,6 +40,7 @@ import com.example.activecare.screens.home.view.DefaultView
 import com.example.activecare.screens.home.view.SleepView
 import com.example.activecare.screens.home.view.WaterView
 import com.example.activecare.screens.home.view.WeightView
+import com.example.activecare.ui.components.BottomNavigationBar
 import com.example.activecare.ui.components.Header
 import kotlinx.coroutines.channels.consumeEach
 import java.util.Calendar
@@ -91,15 +91,14 @@ fun HomeScreen(
                         .fillMaxSize()
                         .background(Color.White),
                 ) {
-                    if (viewState.isLoad){
+                    if (viewState.isLoad) {
                         CircularProgressIndicator(
                             modifier = Modifier
                                 .padding(top = 100.dp)
                                 .size(80.dp)
                                 .align(Alignment.CenterHorizontally)
                         )
-                    }
-                    else{
+                    } else {
                         when (homeSubState) {
                             Default -> DefaultView(
                                 viewState = this@with,
@@ -121,6 +120,7 @@ fun HomeScreen(
                                 whatValue = "pulse",
                                 viewState = viewState,
                             )
+
                             Weight -> WeightView(
                                 viewState = this@with,
                                 limit = limit,
@@ -133,7 +133,7 @@ fun HomeScreen(
                                         HomeEvent.DateChanged(it)
                                     )
                                 },
-                                onDataLoad ={
+                                onDataLoad = {
                                     homeViewModel.obtainEvent(
                                         HomeEvent.LoadData(it)
                                     )
@@ -158,13 +158,15 @@ fun HomeScreen(
                                     homeViewModel.obtainEvent(HomeEvent.SleepSend)
                                 }
                             )
-                            Sp02 ->  BloodView(
-                            onDateClick = {
-                                homeViewModel.obtainEvent(HomeEvent.LoadData(it))
-                            },
-                            whatValue = "spO2",
-                            viewState = viewState,
-                        )
+
+                            Sp02 -> BloodView(
+                                onDateClick = {
+                                    homeViewModel.obtainEvent(HomeEvent.LoadData(it))
+                                },
+                                whatValue = "spO2",
+                                viewState = viewState,
+                            )
+
                             Calories -> CaloriesView(
                                 viewState = this@with,
                                 limit = limit,
@@ -178,13 +180,13 @@ fun HomeScreen(
                                         HomeEvent.DateChanged(it)
                                     )
                                 },
-                                onDataLoad ={
+                                onDataLoad = {
                                     homeViewModel.obtainEvent(
                                         HomeEvent.LoadData(it)
                                     )
                                 },
                                 date = if (viewState.selectedDate == "") Calendar.getInstance()
-                                    else simpleStringParser(viewState.selectedDate)
+                                else simpleStringParser(viewState.selectedDate)
                             )
 
                             Water -> WaterView(
@@ -194,20 +196,21 @@ fun HomeScreen(
                                         HomeEvent.DateChanged(it)
                                     )
                                 },
-                                onDataLoad ={
+                                onDataLoad = {
                                     homeViewModel.obtainEvent(
                                         HomeEvent.LoadData(it)
                                     )
                                 },
                                 date = if (viewState.selectedDate == "") Calendar.getInstance()
                                 else simpleStringParser(viewState.selectedDate),
-                                onChangeWater={
+                                onChangeWater = {
                                     homeViewModel.obtainEvent(
                                         HomeEvent.ChangeWater(it)
                                     )
                                 },
                                 limit = limit,
                             )
+
                             AddCalories -> {
                                 LaunchedEffect(Unit) {
                                     val eventChannel = viewState.eventChannel
@@ -221,6 +224,7 @@ fun HomeScreen(
 
                                             HomeEvent.BackClicked -> {
                                             }
+
                                             else -> {}
                                         }
                                     }

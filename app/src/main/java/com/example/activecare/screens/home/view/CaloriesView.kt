@@ -16,14 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.activecare.common.calculateEndDate
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.common.filterByFoodTypeAndDate
 import com.example.activecare.common.filterFRByDate
 import com.example.activecare.common.simpleDateTimeParser
+import com.example.activecare.screens.home.models.HomeViewState
 import com.example.activecare.ui.components.ChooseDateComponent
 import com.example.activecare.ui.components.FoodRecordComponent
 import com.example.activecare.ui.components.SummaryFoodRecordComponent
-import com.example.activecare.common.dataclasses.Limitation
-import com.example.activecare.screens.home.models.HomeViewState
 import java.util.Calendar
 
 @Composable
@@ -31,9 +31,9 @@ fun CaloriesView(
     viewState: HomeViewState,
     limit: Limitation,
     onAddCaloriesClicked: (String) -> Unit = {},
-    onChangeDate: (String)->Unit,
-    onDataLoad: (Limitation)->Unit,
-    date: Calendar
+    onChangeDate: (String) -> Unit,
+    onDataLoad: (Limitation) -> Unit,
+    date: Calendar,
 ) {
     var currentDate by remember { mutableStateOf(date) }
     var currentDateString by remember {
@@ -42,10 +42,10 @@ fun CaloriesView(
     var endDate by remember {
         mutableStateOf(calculateEndDate(limit).substring(0, 10))
     }
-    LaunchedEffect(currentDateString){
+    LaunchedEffect(currentDateString) {
         onChangeDate.invoke(currentDateString)
         Log.d("CVLE", currentDateString)
-        if (currentDateString.substring(0,10) == calculateEndDate(limit).substring(0,10)){
+        if (currentDateString.substring(0, 10) == calculateEndDate(limit).substring(0, 10)) {
             Log.d("CVLE", "ALARM")
             val newLimit =
                 Limitation(date = currentDateString)

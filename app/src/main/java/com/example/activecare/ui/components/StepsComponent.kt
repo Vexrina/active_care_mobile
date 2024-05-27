@@ -24,10 +24,10 @@ import com.example.activecare.ui.theme.AppTheme
 fun StepsComponent(
     currentProgress: Int,
     maxProgress: Int,
-    ) {
+) {
     Row(
         modifier = Modifier
-            .padding(start=24.dp, end=24.dp, top=8.dp)
+            .padding(start = 24.dp, end = 24.dp, top = 8.dp)
             .border(
                 width = 3.dp,
                 color = AppTheme.colors.LightBack,
@@ -38,14 +38,14 @@ fun StepsComponent(
             .clip(RoundedCornerShape(12.dp))
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
-        ) {
+    ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.padding(start=24.dp)
+            modifier = Modifier.padding(start = 24.dp)
         )
         {
             CircularProgressIndicator(
-                progress = currentProgress.toFloat()/maxProgress,
+                progress = currentProgress.toFloat() / maxProgress,
                 modifier = Modifier.size(120.dp),
                 color = AppTheme.colors.DarkText,
                 trackColor = AppTheme.colors.DarkBack
@@ -59,7 +59,7 @@ fun StepsComponent(
         }
         TextComponent(
             text = "Шаги",
-            modifier = Modifier.padding(start=100.dp),
+            modifier = Modifier.padding(start = 100.dp),
             textColor = AppTheme.colors.LightText,
             textSize = 20.sp,
         )

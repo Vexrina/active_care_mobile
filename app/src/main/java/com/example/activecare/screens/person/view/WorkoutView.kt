@@ -18,12 +18,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
+import com.example.activecare.common.dataclasses.Limitation
 import com.example.activecare.common.simpleDateTimeParser
+import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.components.BoxedText
 import com.example.activecare.ui.components.ChooseDateComponent
 import com.example.activecare.ui.components.TextComponent
-import com.example.activecare.common.dataclasses.Limitation
-import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.theme.AppTheme
 import java.util.Calendar
 
@@ -106,7 +106,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityTotalDistance),
-            value = "${String.format("%.2f", workouts.first.totalDistance/1000)} км"
+            value = "${String.format("%.2f", workouts.first.totalDistance / 1000)} км"
         )
         BoxedText(
             modifier = Modifier
@@ -115,7 +115,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityStreetRun),
-            value = "${String.format("%.2f", workouts.first.streetRun/1000)} км"
+            value = "${String.format("%.2f", workouts.first.streetRun / 1000)} км"
         )
         BoxedText(
             modifier = Modifier
@@ -124,7 +124,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityTrackRun),
-            value = "${String.format("%.2f", workouts.first.trackRun/1000)} км"
+            value = "${String.format("%.2f", workouts.first.trackRun / 1000)} км"
         )
         BoxedText(
             modifier = Modifier
@@ -133,7 +133,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityWalking),
-            value = "${String.format("%.2f", workouts.first.walking/1000)} км"
+            value = "${String.format("%.2f", workouts.first.walking / 1000)} км"
         )
         BoxedText(
             modifier = Modifier
@@ -142,7 +142,7 @@ fun WorkoutView(
             textModifier = Modifier
                 .padding(top = 8.dp, bottom = 8.dp),
             naming = stringResource(id = R.string.WorkoutActivityBike),
-            value = "${String.format("%.2f", workouts.first.bike/1000f)} км"
+            value = "${String.format("%.2f", workouts.first.bike / 1000f)} км"
         )
         Box(
             modifier = Modifier

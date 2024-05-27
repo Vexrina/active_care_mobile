@@ -27,21 +27,20 @@ fun WeightChangesComponent(
     lastWeight: Float = 61.2f,
     preLastWeight: Float = 67.4f,
     lastDateStamp: Calendar = Calendar.getInstance(),
-){
+) {
     Row(
         modifier = Modifier
             .padding(rowPadding)
             .clip(RoundedCornerShape(12))
             .background(AppTheme.colors.LightBack)
             .fillMaxWidth()
-            .height(120.dp)
-                ,
+            .height(120.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
-    ){
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-        ){
+        ) {
             TextComponent(
                 text = "$lastWeight кг",
                 modifier = Modifier,
@@ -66,14 +65,15 @@ fun WeightChangesComponent(
 
 private fun weightChanged(
     lastWeight: Float = 61.2f,
-    preLastWeight: Float = 67.4f
-): String{
-    val changes = lastWeight-preLastWeight
-    return if (changes==0f) ""
+    preLastWeight: Float = 67.4f,
+): String {
+    val changes = lastWeight - preLastWeight
+    return if (changes == 0f) ""
     else "%.1f кг".format(changes)
 }
+
 @Preview
 @Composable
-fun ShowWeightChangesComponent(){
+fun ShowWeightChangesComponent() {
     WeightChangesComponent()
 }

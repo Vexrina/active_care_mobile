@@ -64,6 +64,7 @@ interface ApiService {
      * the added record and null will be returned, otherwise null, Error
      */
     suspend fun appendUserData(data: WatchStat): Pair<WatchStat?, Error?>
+
     /**
      * The function of adding information received from the user.
      * @param: data All the information that user want to add about food record
@@ -71,6 +72,7 @@ interface ApiService {
      * the added record and null will be returned, otherwise null, Error
      */
     suspend fun appendUserData(data: FoodRecord): Pair<FoodRecord?, Error?>
+
     /**
      * The function of adding information received from the user.
      * @param: data All the information that extracted from workout
@@ -78,6 +80,7 @@ interface ApiService {
      * the added record and null will be returned, otherwise null, Error
      */
     suspend fun appendUserData(data: Workout): Pair<Workout?, Error?>
+
     /**
      * The function of adding information received from the user.
      * @param: data All the information that user want to add about common statistic.

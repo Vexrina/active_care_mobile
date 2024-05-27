@@ -2,10 +2,10 @@ package com.example.activecare.screens.onboard.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.EventHandler
-import com.example.activecare.common.dataclasses.OnboardData
+import com.example.activecare.common.cache.domain.Cache
 import com.example.activecare.common.dataclasses.EventTuple
+import com.example.activecare.common.dataclasses.OnboardData
 import com.example.activecare.screens.onboard.models.OnboardEvent
 import com.example.activecare.screens.onboard.models.OnboardSubState
 import com.example.activecare.screens.onboard.models.OnboardViewState
@@ -109,7 +109,7 @@ class OnboardViewModel @Inject constructor(
         }
     }
 
-    private fun saveToCache(){
+    private fun saveToCache() {
         try {
             checkNullable()
             cache.setOnboardData(
@@ -121,19 +121,20 @@ class OnboardViewModel @Inject constructor(
                 )
             )
             sendSuccessEvent()
-        } catch (ex:Exception){
-            when (ex){
+        } catch (ex: Exception) {
+            when (ex) {
                 is NumberFormatException -> sendErrorEvent("Bad value in some field")
                 is NullPointerException -> sendErrorEvent(ex.message!!)
             }
         }
     }
 
-    private fun checkNullable(){
+    private fun checkNullable() {
         if (_viewState.value.female == null ||
             _viewState.value.height == null ||
             _viewState.value.weight == null ||
-            _viewState.value.birthdate == null){
+            _viewState.value.birthdate == null
+        ) {
             throw NullPointerException("Some fields is empty")
         }
     }

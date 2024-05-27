@@ -17,15 +17,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
 import com.example.activecare.common.dataclasses.Limitation
+import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.TextComponent
-import com.example.activecare.screens.person.models.PersonViewState
 import com.example.activecare.ui.theme.AppTheme
 
 @Composable
 fun DefaultView(
     viewState: PersonViewState,
-    loadData: (Limitation)->Unit,
+    loadData: (Limitation) -> Unit,
     onStatViewClick: () -> Unit,
     onWorkoutViewClick: () -> Unit,
     onSettingClick: () -> Unit,
@@ -33,7 +33,7 @@ fun DefaultView(
 ) {
     val height = 56.dp
     val width = 328.dp
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         loadData.invoke(Limitation(""))
     }
     Box(

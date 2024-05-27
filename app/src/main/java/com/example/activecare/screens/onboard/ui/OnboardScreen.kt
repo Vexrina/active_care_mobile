@@ -22,9 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.activecare.R
-import com.example.activecare.ui.components.CircleButton
-import com.example.activecare.ui.components.Header
-import com.example.activecare.ui.components.LinkComponent
 import com.example.activecare.navigation.NavigationTree
 import com.example.activecare.screens.onboard.models.OnboardEvent
 import com.example.activecare.screens.onboard.models.OnboardSubState
@@ -34,6 +31,9 @@ import com.example.activecare.screens.onboard.view.DateView
 import com.example.activecare.screens.onboard.view.GenderView
 import com.example.activecare.screens.onboard.view.ValueView
 import com.example.activecare.screens.signin.models.SignInEvent
+import com.example.activecare.ui.components.CircleButton
+import com.example.activecare.ui.components.Header
+import com.example.activecare.ui.components.LinkComponent
 import kotlinx.coroutines.channels.consumeEach
 
 @Composable
@@ -84,7 +84,6 @@ fun OnboardScreen(
                 ) {
                     when (onboardSubState) {
                         OnboardSubState.Choose -> ChooseView(
-                            viewState = this@with,
                             onSignUp = {
                                 onboardViewModel.obtainEvent(OnboardEvent.NextClicked)
                             },
@@ -95,7 +94,6 @@ fun OnboardScreen(
 
                         OnboardSubState.Gender -> GenderView(
                             viewState = this@with,
-                            navController = navController,
                             onGenderClicked = {
                                 onboardViewModel.obtainEvent(OnboardEvent.GenderClicked(it))
                             }
@@ -104,7 +102,6 @@ fun OnboardScreen(
                         OnboardSubState.Weight -> {
                             ValueView(
                                 viewState = this@with,
-                                navController = navController,
                                 value = this@with.weight,
                                 onValueChange = {
                                     onboardViewModel.obtainEvent(OnboardEvent.WeightChanged(it))
@@ -114,7 +111,6 @@ fun OnboardScreen(
 
                         OnboardSubState.Height -> ValueView(
                             viewState = this@with,
-                            navController = navController,
                             value = this@with.height,
                             onValueChange = {
                                 onboardViewModel.obtainEvent(OnboardEvent.HeightChanged(it))
@@ -151,7 +147,9 @@ fun OnboardScreen(
                             rowModifier = Modifier.padding(top = 12.dp),
                             commonText = "Есть учетная запись?",
                             linkText = "Войти",
-                            linkAction = { /*TODO*/ },
+                            linkAction = {
+                                navController.navigate("${NavigationTree.Login.name}/true")
+                            },
                         )
                     }
 

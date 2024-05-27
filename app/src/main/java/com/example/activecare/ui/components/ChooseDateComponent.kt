@@ -24,17 +24,17 @@ import java.util.Calendar
 fun ChooseDateComponent(
     date: Calendar,
     modifier: Modifier = Modifier,
-    onBackClick: ()->Unit = {},
-    onNextClick: ()->Unit = {},
-){
+    onBackClick: () -> Unit = {},
+    onNextClick: () -> Unit = {},
+) {
     val currentDate = Calendar.getInstance()
     Row(
         modifier = modifier
-            .padding(start = 24.dp, top=20.dp,end=24.dp)
+            .padding(start = 24.dp, top = 20.dp, end = 24.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
-    ){
+    ) {
         CircleButton(
             modifier = Modifier
                 .size(64.dp),
@@ -42,7 +42,7 @@ fun ChooseDateComponent(
             next = false
         )
         TextComponent(
-            text = simpleDateTimeParser(date).substring(0,10),
+            text = simpleDateTimeParser(date).substring(0, 10),
             modifier = Modifier,
             textColor = AppTheme.colors.LightText,
             textSize = 22.sp,
@@ -64,14 +64,14 @@ private fun isSameDate(date1: Calendar, date2: Calendar): Boolean {
 
 @Preview
 @Composable
-fun ChooseDateComponentPreview(){
+fun ChooseDateComponentPreview() {
     val currentDate by remember { mutableStateOf(Calendar.getInstance()) }
 
     ChooseDateComponent(
         date = currentDate,
-        onBackClick = {currentDate.add(Calendar.DATE, -1)},
+        onBackClick = { currentDate.add(Calendar.DATE, -1) },
         onNextClick = {
-            if (currentDate.before(Calendar.getInstance())){
+            if (currentDate.before(Calendar.getInstance())) {
                 currentDate.add(Calendar.DATE, 1)
             }
         }

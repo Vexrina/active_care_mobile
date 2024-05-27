@@ -9,21 +9,21 @@ import org.osmdroid.util.GeoPoint
 
 data class WorkoutViewState(
     val workoutSubState: WorkoutSubState = WorkoutSubState.Default,
-    val user: User = User(gender=true),
+    val user: User = User(gender = true),
     val currentLocation: Location? = null,
     val locations: List<GeoPoint> = emptyList(),
     val distance: Float = 0f,
     val startedTime: Long? = null,
-    val endTime: TimeStamp =TimeStamp(),
+    val endTime: TimeStamp = TimeStamp(),
 
-    val trackStartTime: String ="",
-    val trackEndTime: String ="",
-    val trackCalories: String ="",
-    val trackDistance: String ="",
+    val trackStartTime: String = "",
+    val trackEndTime: String = "",
+    val trackCalories: String = "",
+    val trackDistance: String = "",
     val isWorkout: Boolean = false,
 
     val summaryPauseDuration: Long = 0,
     val summaryPauseDistance: Float = 0f,
 
     val eventChannel: Channel<EventTuple> = Channel(Channel.BUFFERED),
-    )
+)

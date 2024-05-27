@@ -15,10 +15,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.activecare.R
-import com.example.activecare.ui.components.ButtonComponent
-import com.example.activecare.ui.components.TextFieldComponent
 import com.example.activecare.screens.workout.models.WorkoutViewState
+import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.TextComponent
+import com.example.activecare.ui.components.TextFieldComponent
 import com.example.activecare.ui.theme.AppTheme
 
 @Composable
@@ -28,14 +28,14 @@ fun TrackView(
     onTimeEndChanged: (String) -> Unit,
     onDistanceChanged: (String) -> Unit,
     onCaloriesChanged: (String) -> Unit,
-    onButtonClicked: ()->Unit,
+    onButtonClicked: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val textFieldModifier = Modifier
         .fillMaxWidth()
         .padding(top = 24.dp, start = 24.dp, end = 24.dp)
     TextFieldComponent(
-        modifier=textFieldModifier,
+        modifier = textFieldModifier,
         value = viewState.trackStartTime,
         label = stringResource(id = R.string.timeStartTraining),
         onValueChange = {
@@ -53,7 +53,7 @@ fun TrackView(
 
         )
     TextFieldComponent(
-        modifier=textFieldModifier,
+        modifier = textFieldModifier,
         value = viewState.trackEndTime,
         label = stringResource(id = R.string.timeEndTraining),
         onValueChange = {
@@ -70,7 +70,7 @@ fun TrackView(
         ),
     )
     TextFieldComponent(
-        modifier=textFieldModifier,
+        modifier = textFieldModifier,
         value = viewState.trackDistance,
         label = stringResource(id = R.string.distance),
         onValueChange = {
@@ -87,7 +87,7 @@ fun TrackView(
         ),
     )
     TextFieldComponent(
-        modifier=textFieldModifier,
+        modifier = textFieldModifier,
         value = viewState.trackCalories,
         label = stringResource(id = R.string.burnedCalories),
         onValueChange = {
@@ -103,7 +103,7 @@ fun TrackView(
             }
         ),
     )
-    ButtonComponent(text = "sometext", modifier = textFieldModifier.height(60.dp) ) {
+    ButtonComponent(text = "sometext", modifier = textFieldModifier.height(60.dp)) {
         onButtonClicked.invoke()
     }
     TextComponent(

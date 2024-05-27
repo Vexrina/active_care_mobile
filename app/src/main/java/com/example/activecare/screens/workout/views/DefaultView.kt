@@ -12,34 +12,35 @@ import com.example.activecare.ui.components.ButtonComponent
 
 @Composable
 fun DefaultView(
-    onStreetRunClick: ()->Unit = {},
-    onTrackRunClick: ()->Unit = {},
-    onWalkingClick: ()->Unit = {},
-    onBikeClick: ()->Unit = {},
-){
+    onStreetRunClick: () -> Unit = {},
+    onTrackRunClick: () -> Unit = {},
+    onWalkingClick: () -> Unit = {},
+    onBikeClick: () -> Unit = {},
+) {
     val buttonModifier = Modifier
-        .padding(top=20.dp)
+        .padding(top = 20.dp)
         .width(328.dp)
         .height(60.dp)
     ButtonComponent(
         text = stringResource(id = R.string.StreetRun),
-        modifier = Modifier.padding(top=16.dp)
+        modifier = Modifier
+            .padding(top = 16.dp)
             .then(buttonModifier),
-        onClick = {onStreetRunClick.invoke()},
+        onClick = { onStreetRunClick.invoke() },
     )
     ButtonComponent(
         text = stringResource(id = R.string.TrackRun),
         modifier = buttonModifier,
-        onClick = {onTrackRunClick.invoke()},
+        onClick = { onTrackRunClick.invoke() },
     )
     ButtonComponent(
         text = stringResource(id = R.string.Walking),
         modifier = buttonModifier,
-        onClick = {onWalkingClick.invoke()},
+        onClick = { onWalkingClick.invoke() },
     )
     ButtonComponent(
         text = stringResource(id = R.string.Bike),
         modifier = buttonModifier,
-        onClick = {onBikeClick.invoke()},
+        onClick = { onBikeClick.invoke() },
     )
 }

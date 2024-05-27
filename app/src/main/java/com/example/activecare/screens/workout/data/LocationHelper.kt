@@ -43,7 +43,7 @@ class LocationHelper(private val context: Context) {
             override fun onLocationChanged(location: Location) {
                 // Передаем текущее местоположение в колбэк
                 callback(location)
-                if (mapView!=null) updateLocationOnMap(location, mapView = mapView)
+                if (mapView != null) updateLocationOnMap(location, mapView = mapView)
                 // Останавливаем получение обновлений местоположения после первого обновления
                 locationManager.removeUpdates(this)
             }

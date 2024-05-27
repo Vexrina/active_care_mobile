@@ -21,7 +21,7 @@ fun CardComponent(
     header: String,
     value: String,
     onClick: () -> Unit = {},
-    containerColor: Color = Color.Gray
+    containerColor: Color = Color.Gray,
 ) {
     Box(
         modifier = Modifier

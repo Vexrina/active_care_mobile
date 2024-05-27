@@ -16,15 +16,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.activecare.R
+import com.example.activecare.screens.onboard.models.OnboardViewState
 import com.example.activecare.ui.components.ButtonComponent
 import com.example.activecare.ui.components.TextComponent
-import com.example.activecare.screens.onboard.models.OnboardViewState
 import com.example.activecare.ui.theme.AppTheme
 
 @Composable
 fun GenderView(
     viewState: OnboardViewState,
-    navController: NavController,
     onGenderClicked: (Boolean) -> Unit,
 ) {
     Column(

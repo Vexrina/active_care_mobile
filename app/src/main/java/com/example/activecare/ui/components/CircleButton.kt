@@ -33,7 +33,7 @@ fun CircleButton(
         colors = ButtonDefaults.buttonColors(containerColor = color),
     ) {
         Icon(
-            imageVector = if (plus){
+            imageVector = if (plus) {
                 Icons.Outlined.AddCircleOutline
             } else if (next) {
                 Icons.AutoMirrored.Filled.ArrowForward
@@ -67,14 +67,14 @@ fun CircleButton(
         colors = ButtonDefaults.buttonColors(containerColor = if (stop) Color(0xFFFF4433) else color),
     ) {
         Icon(
-            imageVector = if (pause){
+            imageVector = if (pause) {
                 Icons.Outlined.Pause
             } else if (play) {
                 Icons.Filled.PlayArrow
             } else {
                 Icons.Filled.Stop
             },
-            contentDescription = if (pause){
+            contentDescription = if (pause) {
                 "pause workout"
             } else if (play) {
                 "continue workout"

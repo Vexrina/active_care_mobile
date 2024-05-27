@@ -24,10 +24,10 @@ import com.example.activecare.ui.components.TextFieldComponent
 fun SleepView(
     viewState: HomeViewState,
     value: String? = null,
-    onValueChange: (String)->Unit,
-    onDateClick: (Limitation)->Unit,
-    onButtonClick: ()->Unit,
-){
+    onValueChange: (String) -> Unit,
+    onDateClick: (Limitation) -> Unit,
+    onButtonClick: () -> Unit,
+) {
     val focusManager = LocalFocusManager.current
     TextFieldComponent(
         value = value ?: "",
@@ -51,7 +51,7 @@ fun SleepView(
             .padding(top = 24.dp, start = 24.dp, end = 24.dp)
             .fillMaxWidth()
             .height(60.dp),
-        ) {
+    ) {
         onButtonClick.invoke()
     }
     FilterComponent(

@@ -28,8 +28,8 @@ import java.util.Locale
 @Composable
 fun PlotView(
     statList: List<Stat> = defStatList,
-    whatValue: String = "Stat"
-){
+    whatValue: String = "Stat",
+) {
 
 
     val (pointsList, editedStats) = createPlotDataFromList(statList, whatValue)
@@ -52,8 +52,8 @@ fun PlotView(
         .backgroundColor(Color.White)
         .labelAndAxisLinePadding(20.dp)
         .labelData { i ->
-            val yScale = (max-min) / steps.toFloat()
-            String.format("%.0f",(i*yScale)+min)
+            val yScale = (max - min) / steps.toFloat()
+            String.format("%.0f", (i * yScale) + min)
         }.build()
 
     val lineChartData = LineChartData(
@@ -75,15 +75,15 @@ fun PlotView(
         backgroundColor = Color.White,
         paddingRight = 0.dp,
     )
-    Box(modifier = Modifier
-        .background(Color.White)
-        .fillMaxWidth()
-    ){
+    Box(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxWidth()
+    ) {
         LineChart(
             modifier = Modifier
                 .background(Color.White)
-                .height(300.dp)
-            ,
+                .height(300.dp),
             lineChartData = lineChartData
         )
     }
@@ -101,17 +101,17 @@ private val dateList = listOf<String>(
 
 
 private val defStatList = listOf<Stat>(
-    Stat(date_stamp = dateList[0], 0f, 0,0f,553, 0f,0),
-    Stat(date_stamp = dateList[1], 0f, 0,0f,634, 0f,0),
-    Stat(date_stamp = dateList[2], 0f, 0,0f,745, 0f,0),
-    Stat(date_stamp = dateList[3], 0f, 0,0f,0, 0f,0),
-    Stat(date_stamp = dateList[4], 0f, 0,0f,634, 0f,0),
-    Stat(date_stamp = dateList[5], 0f, 0,0f,745, 0f,0),
-    Stat(date_stamp = dateList[6], 0f, 0,0f,553, 0f,0),
+    Stat(date_stamp = dateList[0], 0f, 0, 0f, 553, 0f, 0),
+    Stat(date_stamp = dateList[1], 0f, 0, 0f, 634, 0f, 0),
+    Stat(date_stamp = dateList[2], 0f, 0, 0f, 745, 0f, 0),
+    Stat(date_stamp = dateList[3], 0f, 0, 0f, 0, 0f, 0),
+    Stat(date_stamp = dateList[4], 0f, 0, 0f, 634, 0f, 0),
+    Stat(date_stamp = dateList[5], 0f, 0, 0f, 745, 0f, 0),
+    Stat(date_stamp = dateList[6], 0f, 0, 0f, 553, 0f, 0),
 
-)
+    )
 
-private fun createPlotDataFromListSleep(list: List<Stat>): Pair<List<Point>, List<Stat>>{
+private fun createPlotDataFromListSleep(list: List<Stat>): Pair<List<Point>, List<Stat>> {
     // Создание SimpleDateFormat для парсинга и форматирования даты
     val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
     val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
@@ -131,11 +131,11 @@ private fun createPlotDataFromListSleep(list: List<Stat>): Pair<List<Point>, Lis
         inputFormat.parse(it.date_stamp)
     }
     val pointList = ArrayList<Point>()
-    for (i in uniqueDataSet.indices){
+    for (i in uniqueDataSet.indices) {
         pointList.add(
             Point(
                 i.toFloat(),
-                uniqueDataSet[i].sleep.toFloat()/100
+                uniqueDataSet[i].sleep.toFloat() / 100
             )
         )
     }
@@ -143,9 +143,9 @@ private fun createPlotDataFromListSleep(list: List<Stat>): Pair<List<Point>, Lis
     return Pair(pointList, uniqueDataSet)
 }
 
-private fun createPlotDataFromListPulse(list: List<Stat>): Pair<List<Point>, List<Stat>>{
+private fun createPlotDataFromListPulse(list: List<Stat>): Pair<List<Point>, List<Stat>> {
     val pointList = ArrayList<Point>()
-    for (i in list.indices){
+    for (i in list.indices) {
         pointList.add(
             Point(
                 i.toFloat(),
@@ -156,9 +156,9 @@ private fun createPlotDataFromListPulse(list: List<Stat>): Pair<List<Point>, Lis
     return Pair(pointList, list)
 }
 
-private fun createPlotDataFromListSpO2(list: List<Stat>): Pair<List<Point>, List<Stat>>{
+private fun createPlotDataFromListSpO2(list: List<Stat>): Pair<List<Point>, List<Stat>> {
     val pointList = ArrayList<Point>()
-    for (i in list.indices){
+    for (i in list.indices) {
         pointList.add(
             Point(
                 i.toFloat(),
@@ -171,36 +171,35 @@ private fun createPlotDataFromListSpO2(list: List<Stat>): Pair<List<Point>, List
 
 private fun createPlotDataFromList(
     list: List<Stat>,
-    whatValue: String
-): Pair<List<Point>, List<Stat>>{
-    return if (list.isEmpty()){
-         Pair(emptyList(), emptyList())
-    } else when(whatValue){
-        "pulse"-> createPlotDataFromListPulse(list)
-        "sleep"-> createPlotDataFromListSleep(list)
-        "spO2"-> createPlotDataFromListSpO2(list)
+    whatValue: String,
+): Pair<List<Point>, List<Stat>> {
+    return if (list.isEmpty()) {
+        Pair(emptyList(), emptyList())
+    } else when (whatValue) {
+        "pulse" -> createPlotDataFromListPulse(list)
+        "sleep" -> createPlotDataFromListSleep(list)
+        "spO2" -> createPlotDataFromListSpO2(list)
         else -> Pair(emptyList(), emptyList())
     }
 }
 
 
-
-private fun getMax(list: List<Point>): Float{
+private fun getMax(list: List<Point>): Float {
     if (list.isEmpty())
         return 0f
     var max = 0f
-    list.forEach{point->
+    list.forEach { point ->
         max = maxOf(max, point.y)
     }
     return max
 }
 
 
-private fun getMin(list: List<Point>): Float{
+private fun getMin(list: List<Point>): Float {
     if (list.isEmpty())
         return 0f
     var min = list[0].y
-    list.forEach{point->
+    list.forEach { point ->
         min = minOf(min, point.y)
     }
     return min
